@@ -1,10 +1,10 @@
 /**
  * @class draw2d
  * global namespace declarations
- * 
+ *
  * @private
  */
-var draw2d = 
+var draw2d =
 {
     geo: {
     },
@@ -12,9 +12,9 @@ var draw2d =
     io:{
         json:{},
         png:{},
-        svg:{}  
+        svg:{}
     },
-    
+
     util : {
     	spline: {}
     },
@@ -31,32 +31,32 @@ var draw2d =
         pert:{},
         widget:{}
     },
-    
+
     policy : {
         canvas:{},
         port:{},
         figure:{}
     },
-    
+
     command : {
     },
 
     decoration:{
     	connection:{}
-    }, 
-    
+    },
+
     layout: {
         connection :{},
 	    anchor :{},
 	    mesh :{},
 	    locator: {}
     },
-    
+
     ui :{
-    	
+
     },
-    
-    
+
+
     isTouchDevice : (
             //Detect iPhone
             (navigator.platform.indexOf("iPhone") != -1) ||
@@ -65,14 +65,14 @@ var draw2d =
             //Detect iPad
             (navigator.platform.indexOf("iPad") != -1)
         )
-    
+
 };
 
 // avoid iPad bounce effect during DragDrop
 //
 document.ontouchmove = function(e){e.preventDefault();};
 // hide context menu
-document.oncontextmenu = function() {return false;};
+// document.oncontextmenu = function() {return false;};
 
 // hacking RaphaelJS to support groups of elements
 //
@@ -147,7 +147,7 @@ document.oncontextmenu = function() {return false;};
         if(typeof j === "undefined") {
           j = {x:1, y:1};
         }
-        
+
         if(c == "translate") {
           var k = e;
         }else {
