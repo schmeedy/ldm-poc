@@ -1,11 +1,37 @@
 var LDM = function(canvasId) {
-    var canvas = new draw2d.Canvas(canvasId);
-    canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
+    var ldm = this;
+
+    ldm.canvas = new draw2d.Canvas(canvasId);
+    ldm.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
+
+    ldm.initUndoRedoButtons = function(undoButton, redoButton) {
+        ldm.canvas.getCommandStack().addEventListener({
+            stackChanged: function(event) {
+                function setEnabled(button, enabled) {
+                    if (enabled) {
+                        button.removeClass("disabled");
+                    } else {
+                        button.addClass("disabled");
+                    }
+                }
+
+                setEnabled(undoButton, event.getStack().canUndo());
+                setEnabled(redoButton, event.getStack().canRedo());
+            }
+        });
+
+        undoButton.click(function() {
+            ldm.canvas.getCommandStack().undo();
+        });
+        redoButton.click(function() {
+            ldm.canvas.getCommandStack().redo();
+        });
+    };
 
     function findEmptySpace() {
         for (var y = 50; y < 300; y += 50) {
             for (var x = 50; x < 800; x += 50) {
-                if (canvas.getBestFigure(x, y) == null) {
+                if (ldm.canvas.getBestFigure(x, y) == null) {
                     return { x: x, y: y };
                 }
             }
@@ -30,7 +56,8 @@ var LDM = function(canvasId) {
             loc = {x: 100, y: 50}; // default location
         }
 
-        canvas.addFigure(figure, loc.x, loc.y);
+        ldm.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(ldm.canvas, figure, loc.x, loc.y));
+
         figure.setBackgroundColor("#D5F8CA");
         figure.setResizeable(false);
 
@@ -68,19 +95,22 @@ var LDM = function(canvasId) {
                 var c = new draw2d.Connection();
                 c.setSource(figure.getOutputPort(0));
                 c.setTarget(targetDataset.figure.getInputPort(0));
-                canvas.addFigure(c);
+                ldm.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(ldm.canvas, c));
             }
         };
     };
 
-    return this;
+    return ldm;
 };
 
 $(window).load(function () {
     var ldm = new LDM("ldm-canvas");
-    window.ds1 = ldm.newDataset({id: "dataset.person", title: "Person"});
-    window.ds2 = ldm.newDataset({id: "dataset.department", title: "Department"});
+    ldm.initUndoRedoButtons($(".toolbar .undo"), $(".toolbar .redo"))
+    var ds1 = ldm.newDataset({id: "dataset.person", title: "Person"});
+    var ds2 = ldm.newDataset({id: "dataset.department", title: "Department"});
     ds1.connectTo(ds2);
+
+    ldm.canvas.getCommandStack().markSaveLocation(); // discard undo stack
 
     $("#new-dataset").click(function() {
         ldm.newDataset({id: "", title: ""});
