@@ -1,8 +1,12 @@
-#ldm-canvas {
+#diagram-canvas {
     min-height: 500px;
     background-color: #f7f7f9;
     border: 1px solid #e1e1e8;
     border-radius: 4px;
+}
+
+#diagram-semantic-model {
+    display: none;
 }
 
 .toolbar {

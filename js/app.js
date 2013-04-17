@@ -1,11 +1,20 @@
-var LDM = function(canvasId) {
-    var ldm = this;
+var LdmEditorCtrl = function($scope) {
+    $scope.model = [
+        { id: "dataset.person", title: "Person" },
+        { id: "dataset.department", title: "Department" }
+    ];
+}
 
-    ldm.canvas = new draw2d.Canvas(canvasId);
-    ldm.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
+var LdmDiagram = function(canvasId, semanticModelId) {
+    var diagram = this;
 
-    ldm.initUndoRedoButtons = function(undoButton, redoButton) {
-        ldm.canvas.getCommandStack().addEventListener({
+    diagram.scope = angular.element($("#" + canvasId).get(0)).scope();
+
+    diagram.canvas = new draw2d.Canvas(canvasId);
+    diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
+
+    diagram.initUndoRedoButtons = function(undoButton, redoButton) {
+        diagram.canvas.getCommandStack().addEventListener({
             stackChanged: function(event) {
                 function setEnabled(button, enabled) {
                     if (enabled) {
@@ -21,17 +30,28 @@ var LDM = function(canvasId) {
         });
 
         undoButton.click(function() {
-            ldm.canvas.getCommandStack().undo();
+            diagram.canvas.getCommandStack().undo();
         });
         redoButton.click(function() {
-            ldm.canvas.getCommandStack().redo();
+            diagram.canvas.getCommandStack().redo();
         });
+    };
+
+    diagram.reload = function() {
+        diagram.canvas.clear();
+
+        for (var i = 0; i < diagram.scope.model.length; i++) {
+            var dsModel = diagram.scope.model[i];
+            diagram.newDataset(dsModel);
+        }
+
+        diagram.canvas.getCommandStack().markSaveLocation(); // discard undo stack
     };
 
     function findEmptySpace() {
         for (var y = 50; y < 300; y += 50) {
             for (var x = 50; x < 800; x += 50) {
-                if (ldm.canvas.getBestFigure(x, y) == null) {
+                if (diagram.canvas.getBestFigure(x, y) == null) {
                     return { x: x, y: y };
                 }
             }
@@ -39,14 +59,33 @@ var LDM = function(canvasId) {
         return null;
     }
 
-    function PropertyEditor(model, property) {
-        var editor = new draw2d.shape.basic.Label(model[property]);
-        editor.installEditor(new draw2d.ui.LabelInplaceEditor());
-        editor.setStroke(0);
-        return editor;
+    function TextEditor(modelObject, modelName, property) {
+        var label = new draw2d.shape.basic.Label(modelObject[property]);
+        label.setStroke(0);
+
+        var scope = getScope(modelObject);
+        var binding = modelName + "." + property;
+        scope.$watch(binding, function (newValue) {
+            label.setText(newValue);
+        })
+
+        label.installEditor(new draw2d.ui.LabelInplaceEditor({
+            onCommit: function(value) {
+                scope.$apply(function() {
+                    scope[modelName][property] = value;
+                });
+            }
+        }));
+
+        return label;
     }
 
-    this.newDataset = function(model) {
+    function getScope(model) {
+        var semanticElement = $("#" + semanticModelId + " div[data-id=\"" + model.id + "\"]").get(0);
+        return angular.element(semanticElement).scope();
+    }
+
+    diagram.newDataset = function(model) {
         var figure = new draw2d.shape.basic.Rectangle();
         figure.setMinWidth(100).setMinHeight(50).setDimension(100, 50);
         figure.model = model;
@@ -56,7 +95,7 @@ var LDM = function(canvasId) {
             loc = {x: 100, y: 50}; // default location
         }
 
-        ldm.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(ldm.canvas, figure, loc.x, loc.y));
+        diagram.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(diagram.canvas, figure, loc.x, loc.y));
 
         figure.setBackgroundColor("#D5F8CA");
         figure.setResizeable(false);
@@ -67,7 +106,7 @@ var LDM = function(canvasId) {
             connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
         };
 
-        var titleEditor = new PropertyEditor(model, "title");
+        var titleEditor = new TextEditor(model, "dataset", "title");
         figure.addFigure(titleEditor, new draw2d.layout.locator.CenterLocator(figure));
 
         figure.onDoubleClick = function () { titleEditor.onDoubleClick(); };
@@ -95,24 +134,20 @@ var LDM = function(canvasId) {
                 var c = new draw2d.Connection();
                 c.setSource(figure.getOutputPort(0));
                 c.setTarget(targetDataset.figure.getInputPort(0));
-                ldm.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(ldm.canvas, c));
+                diagram.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(diagram.canvas, c));
             }
         };
     };
 
-    return ldm;
+    return diagram;
 };
 
 $(window).load(function () {
-    var ldm = new LDM("ldm-canvas");
-    ldm.initUndoRedoButtons($(".toolbar .undo"), $(".toolbar .redo"))
-    var ds1 = ldm.newDataset({id: "dataset.person", title: "Person"});
-    var ds2 = ldm.newDataset({id: "dataset.department", title: "Department"});
-    ds1.connectTo(ds2);
-
-    ldm.canvas.getCommandStack().markSaveLocation(); // discard undo stack
+    var diagram = new LdmDiagram("diagram-canvas", "diagram-sematic-model");
+    diagram.initUndoRedoButtons($(".toolbar .undo"), $(".toolbar .redo"));
+    diagram.reload();
 
     $("#new-dataset").click(function() {
-        ldm.newDataset({id: "", title: ""});
+        diagram.newDataset({id: "", title: ""});
     });
 });

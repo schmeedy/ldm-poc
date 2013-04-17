@@ -22,7 +22,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
     <script src="js/bootstrap.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.js"></script>
 
     <script src="js/draw2d/lib/shifty.js"></script>
     <script src="js/draw2d/lib/raphael.js"></script>
@@ -419,7 +419,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" ng-controller="LdmEditorCtrl">
         <div class="row">
             <div class="span12">
                 <div class="btn-group toolbar">
@@ -433,8 +433,19 @@
             </div>
         </div>
         <div class="row">
-            <div id="ldm-canvas" class="span8"></div>
-            <div class="span4"></div>
+            <div class="span8">
+                <div id="diagram-sematic-model">
+                    <div ng-repeat="dataset in model" class="semantic" data-id="{{dataset.id}}"></div>
+                </div>
+                <div id="diagram-canvas"></div>
+            </div>
+            <div class="span4" style>
+                <pre>{{ model | json }}</pre>
+
+                <div ng-repeat="dataset in model">
+                    <input type="text" ng-model="dataset.title" />
+                </div>
+            </div>
         </div>
     </div>
   </body>
