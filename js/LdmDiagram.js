@@ -1,10 +1,3 @@
-var LdmEditorCtrl = function($scope) {
-    $scope.model = [
-        { id: "dataset.person", title: "Person" },
-        { id: "dataset.department", title: "Department" }
-    ];
-}
-
 var LdmDiagram = function(canvasId, semanticModelId) {
     var diagram = this;
 
@@ -141,13 +134,3 @@ var LdmDiagram = function(canvasId, semanticModelId) {
 
     return diagram;
 };
-
-$(window).load(function () {
-    var diagram = new LdmDiagram("diagram-canvas", "diagram-sematic-model");
-    diagram.initUndoRedoButtons($(".toolbar .undo"), $(".toolbar .redo"));
-    diagram.reload();
-
-    $("#new-dataset").click(function() {
-        diagram.newDataset({id: "", title: ""});
-    });
-});
