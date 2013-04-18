@@ -1,3 +1,51 @@
+"use strict";
+
+var AbstractListFeatureSynchronizer = Class.extend({
+
+    synchronize: function() {
+        var self = this;
+
+        var targetModelIds = new draw2d.util.ArrayList();
+
+        var models = self.getModels();
+        for (var i = 0; i < models.length; i++) {
+            var model = models[i];
+            targetModelIds.add(model.id);
+        }
+
+        var modelsWithoutViews = new draw2d.util.ArrayList();
+        modelsWithoutViews.addAll(targetModelIds);
+        var views = self.getViews();
+        views.each(function(i, view) {
+            var modelId = self.getModelIdFromView(view);
+            modelsWithoutViews.remove(modelId);
+            if (!targetModelIds.contains(modelId)) {
+                self.destroyView(view);
+            }
+        });
+
+        for (var y = 0; y < models.length; y++) {
+            var m = models[y];
+            if (modelsWithoutViews.contains(m.id)) {
+                self.createView(m);
+            }
+        }
+    },
+
+    getModels: function() {},
+
+    getViews: function() {},
+
+    getModelIdFromView: function(view) {
+        return view.model.id;
+    },
+
+    createView: function(model) {},
+
+    destroyView: function(view) {}
+
+});
+
 var LdmDiagram = function(canvasId, semanticModelId) {
     var diagram = this;
 
@@ -6,71 +54,74 @@ var LdmDiagram = function(canvasId, semanticModelId) {
     diagram.canvas = new draw2d.Canvas(canvasId);
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 
-    diagram.isDataset = function(figure) {
-        return figure.id != null && figure.id.length > 1 && figure.id.substr(0, 2) == "ds";
+    diagram.getDatasets = function() {
+        var datasets = new draw2d.util.ArrayList();
+        diagram.canvas.figures.each(function(i, figure) {
+            if (figure.modelType === "dataset") {
+                datasets.add(figure);
+            }
+        });
+        return datasets;
     };
 
-    var datasetSynchronizer = (function() {
-
-        var self = this;
-
-        self.getDatasetFigures = function() {
-            var datasets = new draw2d.util.ArrayList();
-            diagram.canvas.figures.each(function(i, figure) {
-                if (diagram.isDataset(figure)) {
-                    datasets.add(figure);
-                }
-            });
-            return datasets;
-        };
-
-        self.syncDatasets = function() {
-            var datasets = diagram.scope.datasets;
-
-            var addedDatasets = new draw2d.util.ArrayList();
-            var currentDsIds = new draw2d.util.ArrayList();
-
-            for (var i = 0; i < datasets.length; i++) {
-                var dataset = datasets[i];
-                var figureId = getDatasetFigureId(dataset);
-                if (diagram.canvas.getFigure(figureId) == null) {
-                    addedDatasets.add(dataset);
-                }
-                currentDsIds.add(figureId);
+    diagram.getDataset = function(dataset) {
+        var datasetFigure = null;
+        var dsId = typeof dataset === "string" ? dataset : dataset.id;
+        diagram.getDatasets().each(function(i, ds) {
+            if (ds.model.id === dsId) {
+                datasetFigure = ds;
             }
+        });
+        return datasetFigure;
+    };
 
-            // create new datasets
-            addedDatasets.each(function(i, newDs) {
-                diagram.newDataset(newDs);
-            });
+    diagram.asyncModelUpdate = function(runnable) {
+        function doUpdate() {
+            diagram.scope.$apply(runnable);
+        }
+        setTimeout(doUpdate, 5);
+    };
 
-            // remove deleted datasets
-            self.getDatasetFigures().each(function(i, dsFigure) {
-                if (!currentDsIds.contains(dsFigure.id)) {
-                    diagram.canvas.removeFigure(dsFigure);
-                }
-            });
-        };
+    var DatasetSynchronizer = AbstractListFeatureSynchronizer.extend({
 
-        self.init = function() {
+        init: function() {
+            var self = this;
             diagram.scope.$watch("datasets.length", function() {
-                setTimeout(self.syncDatasets, 50);
+                function doSynchronize() {
+                    self.synchronize.apply(self);
+                }
+                setTimeout(doSynchronize, 50);
             });
-        };
+        },
 
-        return this;
+        getModels: function() {
+            return diagram.scope.datasets;
+        },
 
-    })();
+        getViews: function() {
+            return diagram.getDatasets();
+        },
+
+        createView: function(model) {
+            diagram.newDataset(model);
+        },
+
+        destroyView: function(view) {
+            diagram.canvas.removeFigure(view);
+        }
+
+    });
+    var datasetSynchronizer = new DatasetSynchronizer();
     datasetSynchronizer.init();
 
     diagram.reload = function() {
-        datasetSynchronizer.syncDatasets();
+        datasetSynchronizer.synchronize();
     };
 
     function findEmptySpace() {
         for (var y = 50; y < 300; y += 50) {
             for (var x = 50; x < 800; x += 50) {
-                if (diagram.canvas.getBestFigure(x, y) == null) {
+                if (diagram.canvas.getBestFigure(x, y) === null) {
                     return { x: x, y: y };
                 }
             }
@@ -86,7 +137,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
         var binding = modelName + "." + property;
         scope.$watch(binding, function (newValue) {
             label.setText(newValue);
-        })
+        });
 
         label.installEditor(new draw2d.ui.LabelInplaceEditor({
             onCommit: function(value) {
@@ -104,63 +155,263 @@ var LdmDiagram = function(canvasId, semanticModelId) {
         return angular.element(semanticElement).scope();
     }
 
-    function getDatasetFigureId(datasetModel) {
-        return "ds:" + datasetModel.id;
-    }
+    var DatasetFigure = draw2d.shape.basic.Rectangle.extend({
 
-    diagram.newDataset = function(model) {
-        var figure = new draw2d.shape.basic.Rectangle();
-        figure.model = model;
-        figure.setId(getDatasetFigureId(model));
-        figure.setMinWidth(100).setMinHeight(50).setDimension(100, 50);
+        init: function(model) {
+            this._super(100, 50);
 
-        var loc = findEmptySpace();
-        if (loc == null) {
-            loc = {x: 100, y: 50}; // default location
-        }
+            this.model = model;
+            this.modelType = "dataset";
 
-        diagram.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(diagram.canvas, figure, loc.x, loc.y));
+            this.setId(this.modelType + ":" + model.id);
 
-        figure.setBackgroundColor("#D5F8CA");
-        figure.setResizeable(false);
+            this.setMinWidth(100).setMinHeight(50);
 
-        figure.createPort("input");
-        var outPort = figure.createPort("output");
-        outPort.onConnect = function(connection) {
-            connection.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
-        };
+            this.setBackgroundColor("#D5F8CA");
+            this.setResizeable(false);
 
-        var titleEditor = new TextEditor(model, "dataset", "title");
-        figure.addFigure(titleEditor, new draw2d.layout.locator.CenterLocator(figure));
+            this.createPort("input");
+            this.createPort("output");
 
-        figure.onDoubleClick = function () { titleEditor.onDoubleClick(); };
+            var titleEditor = new TextEditor(model, "dataset", "title");
+            this.addFigure(titleEditor, new draw2d.layout.locator.CenterLocator(this));
 
-        var ds =  {
-            model: model,
-            figure: figure,
+            this.onDoubleClick = function () { titleEditor.onDoubleClick(); };
+        },
 
-            isConnectedTo: function(targetDataset) {
-                var connections = figure.getOutputPort(0).getConnections();
-                for (var i = 0; i < connections.getSize(); i++) {
-                    var targetPort = connections.get(i).getTarget();
-                    var targetFigure = targetPort == null ? null : targetPort.getParent();
-                    if (targetFigure == targetDataset.figure) {
-                        return true;
-                    }
+        /**
+         * @override
+         */
+        createPort: function(type, locator){
+            if (type === "output") {
+                var port = this.createOutputPort();
+                this.addPort(port, locator);
+                // relayout the ports
+                this.setDimension(this.width,this.height);
+                return port;
+            } else {
+                return this._super(type, locator);
+            }
+        },
+
+        createOutputPort: function() {
+            var ConnectDatasetsCommand = draw2d.command.Command.extend({
+                init : function(sourceDs, targetDs) {
+                    this._super("Connect Datasets");
+
+                    this.source = sourceDs;
+                    this.target = targetDs;
+                },
+
+                execute: function() {
+                    this.source.ensureConnectedTo(this.target.model);
                 }
-                return false;
-            },
+            });
 
-            connectTo: function(targetDataset) {
-                if (this.isConnectedTo(targetDataset)) {
+            var DatasetOutputPort = draw2d.OutputPort.extend({
+                init : function(name) {
+                    this._super(name);
+                },
+
+                createCommand: function(request) {
+                    if (request.getPolicy() !== draw2d.command.CommandType.CONNECT) {
+                        return this._super(request);
+                    }
+                    if (request.source.getParent().getId() === request.target.getParent().getId()) {
+                        return null; // loopback
+                    }
+                    if (!(request.source instanceof draw2d.InputPort || request.source instanceof draw2d.HybridPort)) {
+                        return null; // invalid port type
+                    }
+
+                    return new ConnectDatasetsCommand(request.target.getParent(), request.source.getParent());
+                }
+            });
+            return new DatasetOutputPort("input" + this.inputPorts.getSize());
+        },
+
+        getReferences: function() {
+            var references = new draw2d.util.ArrayList();
+            var connections = this.getOutputPort(0).getConnections();
+            connections.each(function(i,conn) {
+                var targetPort = connections.get(0).getTarget();
+                var targetFigure = targetPort ? targetPort.getParent() : null;
+
+                references.add({
+                    connection: conn,
+                    datasetFigure: targetFigure,
+                    datasetId: targetFigure ? targetFigure.model.id : null
+                });
+            });
+            return references;
+        },
+
+        isConnectedTo: function(targetDsModel) {
+            var targetDsFigure = diagram.getDataset(targetDsModel);
+            if (!targetDsFigure) {
+                return false;
+            }
+            var references = this.getReferences();
+            for (var i = 0; i < references.length; i++) {
+                if (references.get(i).datasetFigure === targetDsFigure) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        ensureConnectedTo: function(targetDsModel) {
+            var targetDsFigure = diagram.getDataset(targetDsModel);
+            if (!targetDsFigure) {
+                return;
+            }
+            var scope = getScope(this.model);
+            scope.$apply(function() {
+                if (!scope.dataset.references) {
+                    scope.dataset.references = [];
+                }
+                if ($.inArray(targetDsFigure.model.id, scope.dataset.references) < 0) {
+                    scope.dataset.references.push(targetDsFigure.model.id);
+                }
+            });
+        },
+
+        removeReferenceTo: function(targetDsModel) {
+            var targetDsFigure = diagram.getDataset(targetDsModel);
+            if (!targetDsFigure) {
+                return;
+            }
+            var scope = getScope(this.model);
+            scope.$apply(function() {
+                if (!scope.dataset.references) {
                     return;
                 }
-                var c = new draw2d.Connection();
-                c.setSource(figure.getOutputPort(0));
-                c.setTarget(targetDataset.figure.getInputPort(0));
-                diagram.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(diagram.canvas, c));
+                var index = $.inArray(targetDsFigure.model.id, scope.dataset.references);
+                if (index >= 0) {
+                    scope.dataset.references.splice(index, 1);
+                }
+            });
+        },
+
+        dispose: function() {
+            var id = this.model.id;
+            var scope = getScope(this.model);
+            scope.$apply(function() {
+                for (var i = 0; i < scope.datasets.length; i ++) {
+                    if (scope.datasets[i].id === id) {
+                        scope.datasets.splice(i, 1);
+                    }
+                }
+            });
+        },
+
+        createConnectionTo: function(targetDsModel) {
+            var self = this;
+
+            var RemoveDatasetConnection = draw2d.command.Command.extend({
+                init : function(connection) {
+                    this._super("Disconnect Datasets");
+
+                    this.connection = connection;
+                },
+
+                execute: function() {
+                    var targetDs = this.connection.getTarget().getParent();
+                    if (targetDs) {
+                        self.removeReferenceTo(targetDs.model);
+                    }
+                }
+            });
+
+            var DatasetConnection = draw2d.Connection.extend({
+                init: function(router) {
+                   this._super(router);
+                   this.setTargetDecorator(new draw2d.decoration.connection.ArrowDecorator());
+                },
+
+                createCommand:function(request) {
+                    if (request.getPolicy() === draw2d.command.CommandType.DELETE) {
+                        return new RemoveDatasetConnection(this);
+                    }
+
+                    return this._super(request);
+                }
+            });
+
+            var targetDsFigure = diagram.getDataset(targetDsModel);
+            if (!targetDsFigure || this.isConnectedTo(targetDsModel)) {
+                return;
             }
-        };
+            var c = new DatasetConnection();
+            c.setSource(this.getOutputPort(0));
+            c.setTarget(targetDsFigure.getInputPort(0));
+            diagram.canvas.addFigure(c);
+        },
+
+        createCommand: function(request) {
+            var DeleteDatasetCommand = draw2d.command.Command.extend({
+                init : function(dataset) {
+                    this._super("Delete Dataset");
+
+                    this.dataset = dataset;
+                },
+
+                execute: function() {
+                    this.dataset.dispose();
+                }
+            });
+
+            if (request.getPolicy() === draw2d.command.CommandType.DELETE) {
+                return new DeleteDatasetCommand(this);
+            }
+
+            return this._super(request);
+        }
+
+    });
+
+    diagram.newDataset = function(model) {
+        var ds = new DatasetFigure(model);
+
+        var loc = findEmptySpace();
+        if (loc === null) {
+            loc = {x: 100, y: 50}; // default location
+        }
+        diagram.canvas.addFigure(ds, loc.x, loc.y);
+
+        var ReferenceSynchronizer = AbstractListFeatureSynchronizer.extend({
+
+            init: function() {
+                var self = this;
+                var scope = getScope(model);
+                scope.$watch("dataset.references.length", function() {
+                    self.synchronize.apply(self);
+                });
+            },
+
+            getModels: function() {
+                return model.references ? model.references : [];
+            },
+
+            getViews: function() {
+                return ds.getReferences();
+            },
+
+            getModelIdFromView: function(view) {
+                return view.datasetId;
+            },
+
+            createView: function(model) {
+                ds.createConnectionTo(model);
+            },
+
+            destroyView: function(view) {
+                diagram.canvas.removeFigure(view.connection);
+            }
+
+        });
+        var referenceSynchronizer = new ReferenceSynchronizer();
+        referenceSynchronizer.init();
 
         return ds;
     };

@@ -52,6 +52,7 @@ ldmApp.factory('Utils', function() {
     };
 });
 
+
 // main controller responsible for the whole app
 function MainCtrl($scope, Utils) {
     // mocks
@@ -81,14 +82,15 @@ function MainCtrl($scope, Utils) {
                     title: "age"
                 }
             ],
-
             references: [
                 'dataset.department'
             ]
         },
         {
             id: "dataset.department",
-            title: "Department" }
+            title: "Department",
+            references: []
+        }
     ];
 
     // actually selected dataset (selected from canvas or from property editor)
