@@ -1,29 +1,28 @@
-<form name="myForm">
-    <div class="control-group" ng-class="{error: myForm.name.$invalid}">
-        <label>Name</label>
-        <input type="text" name="name" ng-model="project.name" required>
-    <span ng-show="myForm.name.$error.required" class="help-inline">
-        Required</span>
-    </div>
+<h2>Attributes and Facts</h2>
+<input type="text" ng-model="search" class="search-query" placeholder="Search">
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Id</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="attribute in selectedDataset.attributes | filter:search | orderBy:'name'">
+        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
+        <td>{{attribute.id}}</td>
+        <td>
+            <a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}"><i class="icon-pencil"></i></a>
+        </td>
+    </tr>
+    <tr ng-repeat="fact in selectedDataset.facts | filter:search | orderBy:'name'">
+        <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" target="_blank">{{fact.title}}</a></td>
+        <td>{{fact.id}}</td>
+        <td>
+            <a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}"><i class="icon-pencil"></i></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
-    <div class="control-group" ng-class="{error: myForm.site.$invalid}">
-        <label>Website</label>
-        <input type="url" name="site" ng-model="project.site" required>
-    <span ng-show="myForm.site.$error.required" class="help-inline">
-        Required</span>
-    <span ng-show="myForm.site.$error.url" class="help-inline">
-        Not a URL</span>
-    </div>
-
-    <label>Description</label>
-    <textarea name="description" ng-model="project.description"></textarea>
-
-    <br>
-    <a href="#/" class="btn">Cancel</a>
-    <button ng-click="save()" ng-disabled="isClean() || myForm.$invalid"
-            class="btn btn-primary">Save
-    </button>
-    <button ng-click="destroy()"
-            ng-show="project._id" class="btn btn-danger">Delete
-    </button>
-</form>
+<br>

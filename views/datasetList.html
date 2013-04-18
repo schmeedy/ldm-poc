@@ -1,23 +1,21 @@
-<input type="text" ng-model="search" class="search-query" placeholder="Search">
+<h2>Datasets</h2>
+<input type="text" ng-model="search" placeholder="Filter datasets">
 <table>
     <thead>
     <tr>
         <th>Title</th>
         <th>Id</th>
-        <th><a href="#/new"><i class="icon-plus-sign"></i></a></th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="dataset in datasets | filter:search | orderBy:'name'">
-        <td><a href="{{dataset.id}}" target="_blank">{{dataset.title}}</a></td>
-        <td>{{project.id}}</td>
+        <td><a href="#/dataset/{{dataset.id}}">{{dataset.title}}</a></td>
+        <td>{{dataset.id}}</td>
         <td>
-            <a href="#/edit/{{dataset._id.$oid}}"><i class="icon-pencil"></i></a>
+            <a href="#/dataset/{{dataset.id}}"><i class="icon-pencil"></i></a>
         </td>
     </tr>
     </tbody>
 </table>
 
 <br>
-
-<pre>{{ datasets | json }}</pre>
