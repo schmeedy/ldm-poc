@@ -406,37 +406,46 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="#">Project name</a>
-
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li><a id="new-dataset" href="#">New Dataset</a></li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Project name</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <!-- <li><a id="new-dataset" href="#">New Dataset</a></li> -->
+            </ul>
+          </div><!--/.nav-collapse -->
         </div>
     </div>
 </div>
 
+    <div class="container" ng-controller="MainCtrl">
+        <div class="navbar toolbar">
+            <div class="navbar-inner">
+                <form class="navbar-form pull-left">
+                    <input type="text" class="span2" ng-model="newDatasetTitle" placeholder="New Dataset Title" />
+                    <a id="btn-undo" class="btn btn-success undo" ng-click="addDataset(newDatasetTitle)"
+                        ng-class="{true: 'disabled', false: ''}[newDatasetTitle == null || newDatasetTitle.length == 0]">
 
-<div class="container" ng-controller="MainCtrl">
-    <div class="row">
-        <div class="span8">
-            <div id="diagram-sematic-model">
-                <div ng-repeat="dataset in datasets" class="semantic" data-id="{{dataset.id}}"></div>
+                        <i class="icon-plus"></i> Add Dataset
+                    </a>
+                </form>
             </div>
-            <div id="diagram-canvas"></div>
         </div>
-        <div class="span4" style>
-            <h2>Datasets</h2>
-            <div ng-view></div>
+        <div class="row">
+            <div class="span8">
+                <div id="diagram-sematic-model">
+                    <div ng-repeat="dataset in datasets" class="semantic" data-id="{{dataset.id}}"></div>
+                </div>
+                <div id="diagram-canvas"></div>
+            </div>
+            <div class="span4" style>
+                <h2>Datasets</h2>
+                <div ng-view></div>
+            </div>
         </div>
     </div>
-</div>
-</body>
+  </body>
 </html>
