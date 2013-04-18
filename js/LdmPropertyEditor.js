@@ -1,14 +1,3 @@
-angular.module('ldm', ['deleteButton']).
-    config(function($routeProvider) {
-        $routeProvider.
-            when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
-            when('/dataset/:datasetId', {controller: DatasetDetailsCtrl, templateUrl: 'views/datasetDetail.html'}).
-            when('/dataset/:datasetId/attribute/:attributeId', {controller: AttributeDetailsCtrl, templateUrl: 'views/attributeDetail.html'}).
-            when('/dataset/:datasetId/fact/:factId', {controller: FactDetailsCtrl, templateUrl: 'views/factDetail.html'}).
-            otherwise({redirectTo: '/'});
-    });
-
-
 function DatasetListCtrl($scope) {
     $scope.remove = function(dataset) {
         var index = $scope.datasets.indexOf(dataset);
