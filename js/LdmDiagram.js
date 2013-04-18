@@ -33,8 +33,8 @@ var LdmDiagram = function(canvasId, semanticModelId) {
     diagram.reload = function() {
         diagram.canvas.clear();
 
-        for (var i = 0; i < diagram.scope.model.length; i++) {
-            var dsModel = diagram.scope.model[i];
+        for (var i = 0; i < diagram.scope.datasets.length; i++) {
+            var dsModel = diagram.scope.datasets[i];
             diagram.newDataset(dsModel);
         }
 
