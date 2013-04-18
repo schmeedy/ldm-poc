@@ -12,3 +12,11 @@
 .toolbar {
     margin-bottom: 7px;
 }
+
+#button-confirm-delete-cancel {
+    margin-right: 10px;
+}
+
+.popover-content {
+    text-align: center;
+}

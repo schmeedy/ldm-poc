@@ -1,21 +1,23 @@
 <h2>Datasets</h2>
 <input type="text" ng-model="search" placeholder="Filter datasets">
-<table>
+<table class="table">
     <thead>
     <tr>
         <th>Title</th>
         <th>Id</th>
+        <th>[edit]</th>
+        <th>[remove]</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="dataset in datasets | filter:search | orderBy:'name'">
         <td><a href="#/dataset/{{dataset.id}}">{{dataset.title}}</a></td>
         <td>{{dataset.id}}</td>
-        <td>
+        <td class="text-center">
             <a href="#/dataset/{{dataset.id}}"><i class="icon-pencil"></i></a>
         </td>
         <td>
-            <a ng-click="remove(dataset)"><i class="icon-remove"></i></a>
+            <button-delete body="Are you sure you want to delete the dataset" fn="remove(dataset)"/>
         </td>
     </tr>
     </tbody>

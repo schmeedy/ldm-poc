@@ -1,4 +1,4 @@
-angular.module('ldm', []).
+angular.module('ldm', ['deleteButton']).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
@@ -20,6 +20,20 @@ function DatasetListCtrl($scope) {
 
 function DatasetDetailsCtrl($scope, $routeParams) {
     $scope.$parent.selectedDataset = findDatasetById($scope.datasets, $routeParams.datasetId);
+
+    $scope.removeAttribute = function(attribute) {
+        var index = $scope.selectedDataset.attributes.indexOf(attribute);
+        if (index >= 0) {
+            $scope.selectedDataset.attributes.splice(index, 1);
+        }
+    };
+
+    $scope.removeFact = function(fact) {
+        var index = $scope.selectedDataset.facts.indexOf(fact);
+        if (index >= 0) {
+            $scope.selectedDataset.facts.splice(index, 1);
+        }
+    };
 }
 
 
@@ -36,10 +50,10 @@ function AttributeDetailsCtrl($scope, $location, $routeParams) {
     $scope.isClean = function() {
 //        return angular.equals(self.original, $scope.project);
         return true;
-    }
+    };
 
     // todo remove attribuge
-    $scope.delete = function() {
+    $scope.destroy = function() {
         self.original.destroy(function() {
             $location.path('/dataset/' + self.$scope.selectedDataset.id);
         });
@@ -59,16 +73,16 @@ function FactDetailsCtrl($scope, $location, $routeParams) {
         $scope.$parent.selectedDataset = findDatasetById($scope.datasets, $routeParams.datasetId);
     }
 
-    $scope.attribute = findInDatasetById($scope.selectedDataset, 'facts',  $routeParams.attributeId);
+    $scope.fact = findInDatasetById($scope.selectedDataset, 'facts', $routeParams.factId);
 
 
     $scope.isClean = function() {
 //        return angular.equals(self.original, $scope.project);
         return true;
-    }
+    };
 
     // todo remove attribuge
-    $scope.delete = function() {
+    $scope.destroy = function() {
         self.original.destroy(function() {
             $location.path('/dataset/' + self.$scope.selectedDataset.id);
         });
