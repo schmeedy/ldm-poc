@@ -10,6 +10,12 @@ angular.module('ldm', []).
 
 
 function DatasetListCtrl($scope) {
+    $scope.remove = function(dataset) {
+        var index = $scope.datasets.indexOf(dataset);
+        if (index >= 0) {
+            $scope.datasets.splice(index, 1);
+        }
+    };
 }
 
 function DatasetDetailsCtrl($scope, $routeParams) {

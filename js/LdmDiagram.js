@@ -6,41 +6,65 @@ var LdmDiagram = function(canvasId, semanticModelId) {
     diagram.canvas = new draw2d.Canvas(canvasId);
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 
-    var DatasetSynchronizer = function() {
+    diagram.isDataset = function(figure) {
+        return figure.id != null && figure.id.length > 1 && figure.id.substr(0, 2) == "ds";
+    };
 
-        var getDatasetFigures = function() {
+    var datasetSynchronizer = (function() {
+
+        var self = this;
+
+        self.getDatasetFigures = function() {
             var datasets = new draw2d.util.ArrayList();
             diagram.canvas.figures.each(function(i, figure) {
-                if (figure.id != null && figure.id.length > 1 && figure.id.substr(0, 2) == "ds") {
+                if (diagram.isDataset(figure)) {
                     datasets.add(figure);
+                }
+            });
+            return datasets;
+        };
+
+        self.syncDatasets = function() {
+            var datasets = diagram.scope.datasets;
+
+            var addedDatasets = new draw2d.util.ArrayList();
+            var currentDsIds = new draw2d.util.ArrayList();
+
+            for (var i = 0; i < datasets.length; i++) {
+                var dataset = datasets[i];
+                var figureId = getDatasetFigureId(dataset);
+                if (diagram.canvas.getFigure(figureId) == null) {
+                    addedDatasets.add(dataset);
+                }
+                currentDsIds.add(figureId);
+            }
+
+            // create new datasets
+            addedDatasets.each(function(i, newDs) {
+                diagram.newDataset(newDs);
+            });
+
+            // remove deleted datasets
+            self.getDatasetFigures().each(function(i, dsFigure) {
+                if (!currentDsIds.contains(dsFigure.id)) {
+                    diagram.canvas.removeFigure(dsFigure);
                 }
             });
         };
 
-        var syncModel = function(model) {
-            console.log("syncing");
-
-            var added   = new draw2d.util.ArrayList();
-            var removed = new draw2d.util.ArrayList();
-
-            for (var i = 0; i < model.length; i++) {
-                var dataset = model[i];
-            }
+        self.init = function() {
+            diagram.scope.$watch("datasets.length", function() {
+                setTimeout(self.syncDatasets, 50);
+            });
         };
 
-        diagram.scope.$watch("datasets.length", function(model) {
-            syncModel(model);
-        });
+        return this;
 
-    }
+    })();
+    datasetSynchronizer.init();
 
     diagram.reload = function() {
-        diagram.canvas.clear();
-
-        for (var i = 0; i < diagram.scope.datasets.length; i++) {
-            var dsModel = diagram.scope.datasets[i];
-            diagram.newDataset(dsModel);
-        }
+        datasetSynchronizer.syncDatasets();
     };
 
     function findEmptySpace() {
@@ -81,14 +105,14 @@ var LdmDiagram = function(canvasId, semanticModelId) {
     }
 
     function getDatasetFigureId(datasetModel) {
-        return "ds:" + datasetModel;
+        return "ds:" + datasetModel.id;
     }
 
     diagram.newDataset = function(model) {
         var figure = new draw2d.shape.basic.Rectangle();
-        figure.setMinWidth(100).setMinHeight(50).setDimension(100, 50);
         figure.model = model;
         figure.setId(getDatasetFigureId(model));
+        figure.setMinWidth(100).setMinHeight(50).setDimension(100, 50);
 
         var loc = findEmptySpace();
         if (loc == null) {
@@ -111,7 +135,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
 
         figure.onDoubleClick = function () { titleEditor.onDoubleClick(); };
 
-        return {
+        var ds =  {
             model: model,
             figure: figure,
 
@@ -137,6 +161,8 @@ var LdmDiagram = function(canvasId, semanticModelId) {
                 diagram.canvas.getCommandStack().execute(new draw2d.command.CommandAdd(diagram.canvas, c));
             }
         };
+
+        return ds;
     };
 
     return diagram;

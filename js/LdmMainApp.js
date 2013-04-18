@@ -1,5 +1,5 @@
 function MainCtrl($scope) {
-    $scope.datasets = [
+$scope.datasets = [
         {
             id: "dataset.person",
             title: "Person",
