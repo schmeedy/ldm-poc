@@ -1,39 +1,44 @@
-<h3>Dataset properties</h3>
+<h3>{{selectedDataset.title}}</h3>
+<p>Dataset with facts</p>
+<p>in <strong>SomeProjectName</strong> project</p>
 
-<h4>Basic properties</h4>
-<input type="text" ng-model="selectedDataset.title" placeholder="Dataset title">
-<input type="text" disabled="true" ng-model="selectedDataset.id">
 
-<h4>Attributes and Facts</h4>
-<input type="text" ng-model="search" placeholder="Filter attributes and facts">
+<h4>Attributes and facts</h4>
+
 <table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Id</th>
-        <th>[edit]</th>
-        <th>[remove]</th>
-    </tr>
-    </thead>
     <tbody>
-    <tr ng-repeat="attribute in selectedDataset.attributes | filter:search | orderBy:'name'">
-        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
-        <td>{{attribute.id}}</td>
+    <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
         <td>
-            <a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}"><i class="icon-pencil"></i></a>
+            <i class="icon-list"></i>
+            <i ng-show="attribute.connectionPoint" class="icon-star"></i>
+            <!--<span ng-hide="attribute.connectionPoint">-->
+                <!--<i class="icon-star-empty"></i>-->
+            <!--</span>-->
         </td>
+        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
         <td>
             <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
         </td>
     </tr>
-    <tr ng-repeat="fact in selectedDataset.facts | filter:search | orderBy:'name'">
+    <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
+        <td><i class="icon-cog"></i></td>
         <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" target="_blank">{{fact.title}}</a></td>
-        <td>{{fact.id}}</td>
-        <td>
-            <a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}"><i class="icon-pencil"></i></a>
-        </td>
         <td>
             <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>References</h4>
+
+<table class="table table-striped">
+    <tbody>
+    <tr ng-repeat="reference in selectedDataset.references">
+        <td><i class="icon-share"></i></td>
+        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{reference}}</a></td>
+        <td>
+            <button-delete body="Are you sure you want to delete the reference?" fn="removeReference(reference)"/>
         </td>
     </tr>
     </tbody>

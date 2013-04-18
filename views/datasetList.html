@@ -1,12 +1,12 @@
 <p>GoodData project</p>
-<p></p><strong>SomeProjectName</strong></p>
+<p><strong>SomeProjectName</strong></p>
 <span>id:</span><span>kwehjejk1h23welkrjsf9</span>
 
 <h3>Datasets</h3>
 <table class="table">
     <tbody>
     <tr ng-repeat="dataset in datasets | orderBy:'title'">
-        <td><i class="icon-th"></i></td>
+        <td><i class="icon-list"></i></td>
         <td><a href="#/dataset/{{dataset.id}}">{{dataset.title}}</a></td>
         <td>
             <button-delete body="Are you sure you want to delete the dataset" fn="remove(dataset)"/>
