@@ -426,7 +426,7 @@
     <div class="container" ng-controller="MainCtrl">
         <div class="navbar toolbar">
             <div class="navbar-inner">
-                <form class="navbar-form pull-left">
+                <form class="navbar-form pull-left" ng-submit="addDataset(newDatasetTitle)">
                     <input type="text" class="span2" ng-model="newDatasetTitle" placeholder="New Dataset Title" />
                     <a id="btn-undo" class="btn btn-success undo" ng-click="addDataset(newDatasetTitle)"
                         ng-class="{true: 'disabled', false: ''}[newDatasetTitle == null || newDatasetTitle.length == 0]">

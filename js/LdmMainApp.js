@@ -9,10 +9,11 @@ var ldmApp = angular.module('ldm', ['deleteButton']).
             otherwise({redirectTo: '/'});
     });
 
+// TODO enforce uniqueness
 // utility service for sharing common methods
 ldmApp.factory('Utils', function() {
     return {
-        uuid: function(type, title) {
+        uuid: function(type, title, datasets) {
             var sections = [type];
 
             if (!title) {
@@ -31,6 +32,22 @@ ldmApp.factory('Utils', function() {
             }
 
             return sections.join(".");
+        },
+
+        addDataset: function(scope, datasetTitle) {
+            if (!datasetTitle) {
+                return;
+            }
+
+            var datasetTitles = datasetTitle.split(/[;,]/);
+            for (var i = 0; i < datasetTitles.length; i++) {
+                var singleDatasetTitle = datasetTitles[i];
+                scope.datasets.push({
+                    id: this.uuid('dataset', singleDatasetTitle),
+                    title: singleDatasetTitle
+                });
+            }
+
         }
     };
 });
@@ -79,15 +96,7 @@ function MainCtrl($scope, Utils) {
 
 
     $scope.addDataset = function(title) {
-        if (!title) {
-            return;
-        }
-
-        $scope.datasets.push({
-            id: Utils.uuid('dataset', title),
-            title: title
-        });
-
+        Utils.addDataset($scope, title);
         $scope.newDatasetTitle = "";
     };
 }
