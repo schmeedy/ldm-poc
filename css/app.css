@@ -24,3 +24,7 @@
 .table .text-right {
     text-align: right;
 }
+
+table .dataset-editbox {
+    width: 97%;
+}

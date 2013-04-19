@@ -1,6 +1,5 @@
-<h3>{{selectedDataset.title}}</h3>
-<p>Dataset with facts</p>
-<p>in <strong>SomeProjectName</strong> project</p>
+<h3>{{selectedDataset.title}}<span class="muted"> dataset</span></h3>
+<span class="muted"><p>in <strong>SomeProjectName</strong> project</p></span>
 
 
 <h4>Attributes and facts</h4>
@@ -12,7 +11,7 @@
             <i class="icon-list"></i>
             <i ng-show="attribute.connectionPoint" class="icon-star"></i>
             <!--<span ng-hide="attribute.connectionPoint">-->
-                <!--<i class="icon-star-empty"></i>-->
+            <!--<i class="icon-star-empty"></i>-->
             <!--</span>-->
         </td>
         <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
@@ -26,6 +25,22 @@
         <td>
             <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
         </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table">
+    <tbody>
+    <tr>
+        <form ng-submit="addField(newTitle,fieldType)">
+            <td>
+                <input type="text" ng-model="newTitle" size="30" placeholder="Add Attribute or Fact">
+            </td>
+            <td>
+                <buttons-radio class="btn-group" data-toggle="buttons-radio" model='fieldType'
+                               options='fieldTypes'></buttons-radio>
+            </td>
+        </form>
     </tr>
     </tbody>
 </table>

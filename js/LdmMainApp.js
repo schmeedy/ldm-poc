@@ -11,7 +11,7 @@ $(window).load(function() {
 });
 
 // main module
-var ldmApp = angular.module('ldm', ['deleteButton']).
+var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio']).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
@@ -68,16 +68,16 @@ ldmApp.factory('Utils', function() {
                     return false;
                 }
 
-                if (datasets.facts) {
-                    for (j = 0; j < datasets.facts.length; j++) {
+                if (datasets[i].facts) {
+                    for (j = 0; j < datasets[i].facts.length; j++) {
                         if (datasets[i].facts[j].id === id) {
                             return false;
                         }
                     }
                 }
 
-                if (datasets.attributes) {
-                    for (j = 0; j < datasets.attributes.length; j++) {
+                if (datasets[i].attributes) {
+                    for (j = 0; j < datasets[i].attributes.length; j++) {
                         if (datasets[i].attributes[j].id === id) {
                             return false;
                         }
@@ -88,7 +88,7 @@ ldmApp.factory('Utils', function() {
         },
 
         // insert dataset with given into model, unique id is generated automatically
-        addDataset: function(scope, datasetTitle) {
+        addDataset: function(allDatasets, datasetTitle) {
             if (!datasetTitle) {
                 return;
             }
@@ -96,12 +96,40 @@ ldmApp.factory('Utils', function() {
             var datasetTitles = datasetTitle.split(/[;,]/);
             for (var i = 0; i < datasetTitles.length; i++) {
                 var singleDatasetTitle = datasetTitles[i];
-                scope.datasets.push({
-                    id: this.uuid('dataset', singleDatasetTitle, scope.datasets),
+                allDatasets.push({
+                    id: this.uuid('dataset', singleDatasetTitle, allDatasets),
                     title: singleDatasetTitle
                 });
             }
+        },
 
+        // add field (fact/attribute) to the dataset; unique id of field is generated automatically
+        addFieldToDataset: function(allDatasets, dataset, fieldTitle, fieldType) {
+            var titles, singleTitle, fieldsPropertyName;
+
+            if (!fieldTitle || !fieldType) {
+                return;
+            }
+
+            switch (fieldType) {
+                case 'attribute':
+                    fieldsPropertyName = 'attributes';
+                    break;
+                case 'fact':
+                    fieldsPropertyName = 'facts';
+                    break;
+                default:
+                    throw "Unknown field type: " + fieldType;
+            }
+
+            titles = fieldTitle.split(/[;,]/);
+            for (var i = 0; i < titles.length; i++) {
+                singleTitle = titles[i];
+                dataset[fieldsPropertyName].push({
+                    id: this.uuid(fieldType, singleTitle, allDatasets),
+                    title: singleTitle
+                });
+            }
         }
     };
 });
@@ -152,7 +180,7 @@ function MainCtrl($scope, Utils) {
 
 
     $scope.addDataset = function(title) {
-        Utils.addDataset($scope, title);
+        Utils.addDataset($scope.datasets, title);
         $scope.newDatasetTitle = "";
     };
 

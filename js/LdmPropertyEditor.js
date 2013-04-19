@@ -5,13 +5,28 @@ function DatasetListCtrl($scope, Utils) {
 
 
     $scope.addDataset = function(title) {
-        Utils.addDataset($scope, title);
+        Utils.addDataset($scope.datasets, title);
         $scope.newDatasetTitleFromEditor = "";
     };
 }
 
-function DatasetDetailsCtrl($scope, $routeParams) {
+function DatasetDetailsCtrl($scope, $routeParams, Utils) {
     $scope.$parent.selectedDataset = findDatasetById($scope.datasets, $routeParams.datasetId);
+
+
+    $scope.fieldTypes = [
+        {
+            value: 'attribute',
+            title: 'Attribute'
+        },
+        {
+            value: 'fact',
+            title: 'Fact'
+        }
+    ];
+
+    $scope.fieldType = 'attribute';
+
 
     $scope.removeAttribute = function(attribute) {
         var index = $scope.selectedDataset.attributes.indexOf(attribute);
@@ -25,6 +40,15 @@ function DatasetDetailsCtrl($scope, $routeParams) {
         if (index >= 0) {
             $scope.selectedDataset.facts.splice(index, 1);
         }
+    };
+
+    $scope.addField = function(title, type) {
+        if (!title || !type) {
+            return;
+        }
+
+        Utils.addFieldToDataset($scope.datasets, $scope.selectedDataset, title, type);
+        $scope.newTitle = '';
     };
 }
 
