@@ -101,4 +101,19 @@ function MainCtrl($scope, Utils) {
         Utils.addDataset($scope, title);
         $scope.newDatasetTitle = "";
     };
+
+    $scope.removeDataset = function(dataset) {
+        for (var i = 0; i < $scope.datasets.length; i ++) {
+            var ds = $scope.datasets[i];
+            if (ds.id === dataset.id) {
+                $scope.datasets.splice(i, 1);
+            } else if (ds.references) {
+                // remove reference to the removed dataset
+                var index = $.inArray(dataset.id, ds.references);
+                if (index >= 0) {
+                    ds.references.splice(index, 1);
+                }
+            }
+        }
+    };
 }

@@ -1,9 +1,6 @@
 function DatasetListCtrl($scope, Utils) {
     $scope.remove = function(dataset) {
-        var index = $scope.datasets.indexOf(dataset);
-        if (index >= 0) {
-            $scope.datasets.splice(index, 1);
-        }
+        $scope.removeDataset(dataset);
     };
 
 

@@ -103,11 +103,11 @@ var LdmDiagram = function(canvasId, semanticModelId) {
         },
 
         createView: function(model) {
-            diagram.newDataset(model);
+            diagram.createDataset(model);
         },
 
         destroyView: function(view) {
-            diagram.canvas.removeFigure(view);
+            diagram.removeDataset(view);
         }
 
     });
@@ -204,7 +204,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
                 },
 
                 execute: function() {
-                    this.source.ensureConnectedTo(this.target.model);
+                    this.source.ensureReference(this.target.model);
                 }
             });
 
@@ -260,7 +260,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
             return false;
         },
 
-        ensureConnectedTo: function(targetDsModel) {
+        ensureReference: function(targetDsModel) {
             var targetDsFigure = diagram.getDataset(targetDsModel);
             if (!targetDsFigure) {
                 return;
@@ -276,7 +276,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
             });
         },
 
-        removeReferenceTo: function(targetDsModel) {
+        removeReference: function(targetDsModel) {
             var targetDsFigure = diagram.getDataset(targetDsModel);
             if (!targetDsFigure) {
                 return;
@@ -294,14 +294,11 @@ var LdmDiagram = function(canvasId, semanticModelId) {
         },
 
         dispose: function() {
-            var id = this.model.id;
+            var selfModel = this.model;
             var scope = getScope(this.model);
+
             scope.$apply(function() {
-                for (var i = 0; i < scope.datasets.length; i ++) {
-                    if (scope.datasets[i].id === id) {
-                        scope.datasets.splice(i, 1);
-                    }
-                }
+                scope.removeDataset(selfModel);
             });
         },
 
@@ -318,7 +315,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
                 execute: function() {
                     var targetDs = this.connection.getTarget().getParent();
                     if (targetDs) {
-                        self.removeReferenceTo(targetDs.model);
+                        self.removeReference(targetDs.model);
                     }
                 }
             });
@@ -370,7 +367,7 @@ var LdmDiagram = function(canvasId, semanticModelId) {
 
     });
 
-    diagram.newDataset = function(model) {
+    diagram.createDataset = function(model) {
         var ds = new DatasetFigure(model);
 
         var loc = findEmptySpace();
@@ -414,6 +411,13 @@ var LdmDiagram = function(canvasId, semanticModelId) {
         referenceSynchronizer.init();
 
         return ds;
+    };
+
+    diagram.removeDataset = function(dataset) {
+        dataset.getOutputPort(0).getConnections().each(function(i, outgoingConnection) {
+            diagram.canvas.removeFigure(outgoingConnection);
+        });
+        diagram.canvas.removeFigure(dataset);
     };
 
     return diagram;
