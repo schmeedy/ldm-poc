@@ -15,14 +15,14 @@
             <!--</span>-->
         </td>
         <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
-        <td>
+        <td class="text-right">
             <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
         </td>
     </tr>
     <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
         <td><i class="icon-cog"></i></td>
         <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" target="_blank">{{fact.title}}</a></td>
-        <td>
+        <td class="text-right">
             <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
         </td>
     </tr>
@@ -52,7 +52,7 @@
     <tr ng-repeat="reference in selectedDataset.references">
         <td><i class="icon-share"></i></td>
         <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{reference}}</a></td>
-        <td>
+        <td class="text-right">
             <button-delete body="Are you sure you want to delete the reference?" fn="removeReference(reference)"/>
         </td>
     </tr>
