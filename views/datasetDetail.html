@@ -53,7 +53,7 @@
     <tbody>
     <tr ng-repeat="reference in selectedDataset.references">
         <td><i class="icon-share"></i></td>
-        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{reference}}</a></td>
+        <td><a href="#/dataset/{{reference}}">{{reference}}</a></td>
         <td class="text-right">
             <button-delete body="Are you sure you want to delete the reference?" fn="removeReferencereference)"/>
         </td>
