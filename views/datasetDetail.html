@@ -1,64 +1,87 @@
-<h3 data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}<span class="muted"> dataset</span>
+<h3 data-toggle="tooltip" title="{{selectedDataset.id}}">
+    {{selectedDataset.title}}
+    <span class="muted" ng-switch on="selectedDataset.type">
+        <span ng-switch-when="dataset">Dataset</span>
+        <span ng-switch-when="date-dimension">Date</span>
+    </span>
 </h3>
 <span class="muted">in <strong>{{project.title}}</strong> project</span>
 
-<h4>Attributes and facts</h4>
+<div ng-show="selectedDataset.type == 'dataset'">
 
-<table class="table table-striped">
-    <tbody>
-    <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
-        <td>
-            <i class="icon-list"></i>
-            <i ng-show="attribute.connectionPoint" class="icon-star"></i>
-            <!--<span ng-hide="attribute.connectionPoint">-->
-            <!--<i class="icon-star-empty"></i>-->
-            <!--</span>-->
-        </td>
-        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}" data-toggle="tooltip"
-               title="{{attribute.id}}">{{attribute.title}}</a></td>
-        <td class="text-right">
-            <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
-        </td>
-    </tr>
-    <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
-        <td><i class="icon-cog"></i></td>
-        <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" data-toggle="tooltip" title="{{fact.id}}">{{fact.title}}</a>
-        </td>
-        <td class="text-right">
-            <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <h4>Attributes and facts</h4>
 
-<table class="table">
-    <tbody>
-    <tr>
-        <form ng-submit="addField(newTitle,fieldType)">
+    <table class="table table-striped">
+        <tbody>
+        <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
             <td>
-                <buttons-radio class="btn-group" data-toggle="buttons-radio" model='fieldType'
-                               options='fieldTypes'></buttons-radio>
+                <i class="icon-list"></i>
+                <i ng-show="attribute.connectionPoint" class="icon-star"></i>
+                <!--<span ng-hide="attribute.connectionPoint">-->
+                <!--<i class="icon-star-empty"></i>-->
+                <!--</span>-->
             </td>
-            <td>
-                <input type="text" ng-model="newTitle" size="30" placeholder="Add Attribute or Fact">
+            <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}" data-toggle="tooltip"
+                   title="{{attribute.id}}">{{attribute.title}}</a></td>
+            <td class="text-right">
+                <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
             </td>
-        </form>
-    </tr>
-    </tbody>
-</table>
+        </tr>
+        <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
+            <td><i class="icon-cog"></i></td>
+            <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" data-toggle="tooltip" title="{{fact.id}}">{{fact.title}}</a>
+            </td>
+            <td class="text-right">
+                <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<h4>References</h4>
+    <table class="table">
+        <tbody>
+        <tr>
+            <form ng-submit="addField(newTitle,fieldType)">
+                <td>
+                    <buttons-radio class="btn-group" data-toggle="buttons-radio" model='fieldType'
+                                   options='fieldTypes'></buttons-radio>
+                </td>
+                <td>
+                    <input class="input-medium" type="text" ng-model="newTitle" placeholder="Title">
+                </td>
+                <td>
+                    <a class="btn btn-success" ng-click="addField(newTitle,fieldType)"
+                        ng-class="{true: 'disabled', false: ''}[newTitle == null || newTitle.length == 0]">
 
-<table class="table table-striped">
-    <tbody>
-    <tr ng-repeat="reference in selectedDataset.references">
-        <td><i class="icon-share"></i></td>
-        <td><a href="#/dataset/{{reference}}">{{reference}}</a></td>
-        <td class="text-right">
-            <button-delete body="Are you sure you want to delete the reference?" fn="removeReferencereference)"/>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                        <i class="icon-plus"></i>
+                    </a>
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
 
-<a href="#/" class="btn"><i class="icon-chevron-left"></i> Back to the dataset list</a>
+    <div ng-show="selectedDataset.references.length > 0">
+        <h4>References</h4>
+
+        <table class="table table-striped">
+            <tbody>
+            <tr ng-repeat="reference in selectedDataset.references">
+                <td><i class="icon-share"></i></td>
+                <td><a href="#/dataset/{{reference}}">{{reference}}</a></td>
+                <td class="text-right">
+                    <button-delete body="Are you sure you want to delete the reference?" fn="removeReferencereference)"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div ng-show="selectedDataset.type == 'date-dimension'">
+    <h4>Attributes not configurable</h4>
+</div>
+
+<p>
+    <a href="#/" class="btn"><i class="icon-chevron-left"></i> Back to the dataset list</a>
+</p>

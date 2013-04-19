@@ -18,7 +18,7 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
     $scope.fieldTypes = [
         {
             value: 'attribute',
-            title: 'Attribute'
+            title: 'Attr'
         },
         {
             value: 'fact',

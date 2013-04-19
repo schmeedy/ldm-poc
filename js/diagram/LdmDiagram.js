@@ -5,7 +5,7 @@ ldm.diagram.LdmDiagram = function(canvasId, zoomToolbarId, semanticModelId) {
 
     diagram.canvas = new draw2d.Canvas(canvasId);
 
-    diagram.toolbar = new ldm.diagram.Toolbar(zoomToolbarId, this, diagram.canvas);
+    diagram.toolbar = new ldm.diagram.Toolbar(zoomToolbarId, diagram.canvas);
 
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 
@@ -144,9 +144,12 @@ ldm.diagram.LdmDiagram = function(canvasId, zoomToolbarId, semanticModelId) {
     };
 
     diagram.removeDataset = function(dataset) {
-        dataset.getOutputPort(0).getConnections().each(function(i, outgoingConnection) {
-            diagram.canvas.removeFigure(outgoingConnection);
-        });
+        var outputPort = dataset.getOutputPort(0);
+        if (outputPort) {
+            outputPort.getConnections().each(function(i, outgoingConnection) {
+                diagram.canvas.removeFigure(outgoingConnection);
+            });
+        }
         diagram.canvas.removeFigure(dataset);
     };
 

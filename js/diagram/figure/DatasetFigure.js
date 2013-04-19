@@ -13,16 +13,26 @@ ldm.diagram.figure.DatasetFigure = draw2d.shape.basic.Rectangle.extend({
 
         this.setMinWidth(100).setMinHeight(50);
 
-        this.setBackgroundColor("#D5F8CA");
-        this.setResizeable(false);
+        if (this.isDateDimension()) {
+            this.setBackgroundColor("#E8F2FC");
+        } else {
+            this.setBackgroundColor("#D5F8CA");
+        }
 
         this.createPort("input");
-        this.createPort("output");
+
+        if (!this.isDateDimension()) {
+            this.createPort("output");
+        }
 
         var titleEditor = new ldm.diagram.figure.TextEditor(this.scope, this.model, "dataset", "title");
         this.addFigure(titleEditor, new draw2d.layout.locator.CenterLocator(this));
 
         this.onDoubleClick = function () { titleEditor.onDoubleClick(); };
+    },
+
+    isDateDimension: function() {
+        return this.model.type === "date-dimension";
     },
 
     /**
@@ -78,6 +88,10 @@ ldm.diagram.figure.DatasetFigure = draw2d.shape.basic.Rectangle.extend({
 
     getReferences: function() {
         var references = new draw2d.util.ArrayList();
+        if (this.isDateDimension()) {
+            return references; // date dimension has no references
+        }
+
         var connections = this.getOutputPort(0).getConnections();
         connections.each(function(i,conn) {
             var targetPort = connections.get(0).getTarget();

@@ -88,7 +88,7 @@ ldmApp.factory('Utils', function() {
         },
 
         // insert dataset with given into model, unique id is generated automatically
-        addDataset: function(allDatasets, datasetTitle) {
+        addDataset: function(allDatasets, datasetTitle, datasetType) {
             if (!datasetTitle) {
                 return;
             }
@@ -98,7 +98,8 @@ ldmApp.factory('Utils', function() {
                 var singleDatasetTitle = datasetTitles[i];
                 allDatasets.push({
                     id: this.uuid('dataset', singleDatasetTitle, allDatasets),
-                    title: singleDatasetTitle
+                    title: singleDatasetTitle,
+                    type: datasetType || "dataset"
                 });
             }
         },
@@ -140,8 +141,7 @@ ldmApp.factory('Utils', function() {
 
 
 // main controller responsible for the whole app
-function MainCtrl($scope, Utils, LdmResource) {
-
+function MainCtrl($scope, $location, Utils, LdmResource) {
     $scope.datasets = [];
 
     $scope.datasets = mock.ldm.model.objects;
@@ -152,14 +152,24 @@ function MainCtrl($scope, Utils, LdmResource) {
 //            title: data.ldm.projectMeta.title
 //        };
 //    });
-
-
     // actually selected dataset (selected from canvas or from property editor)
     $scope.selectedDataset = null;
 
+    $scope.datasetTypeOptions = [
+        {
+            value: "dataset",
+            title: "Dataset"
+        },
+        {
+            value: "date-dimension",
+            title: "Date"
+        }
+    ];
 
-    $scope.addDataset = function(title) {
-        Utils.addDataset($scope.datasets, title);
+    $scope.newDatasetType = "dataset";
+
+    $scope.addDataset = function(title, type) {
+        Utils.addDataset($scope.datasets, title, type);
         $scope.newDatasetTitle = "";
     };
 
@@ -178,7 +188,7 @@ function MainCtrl($scope, Utils, LdmResource) {
         }
     };
 
-	$scope.selectDataset = function(dataset) {
+    $scope.selectDataset = function(dataset) {
         if ((!$scope.selectedDataset && !dataset) ||
             $scope.selectedDataset && dataset && ($scope.selectedDataset.id === dataset.id)) {
             return;
