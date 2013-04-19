@@ -9,7 +9,7 @@
     <tbody>
     <tr ng-repeat="dataset in datasets | orderBy:'title'">
         <td><i class="icon-list"></i></td>
-        <td><a href="#/dataset/{{dataset.id}}">{{dataset.title}}</a></td>
+        <td><a href="#/dataset/{{dataset.id}}" data-toggle="tooltip" title="{{dataset.id}}">{{dataset.title}}</a></td>
         <td class="text-right">
             <button-delete body="Are you sure you want to delete the dataset" fn="remove(dataset)"/>
         </td>

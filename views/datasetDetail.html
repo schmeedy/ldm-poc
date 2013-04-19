@@ -1,6 +1,5 @@
-<h3>{{selectedDataset.title}}<span class="muted"> dataset</span></h3>
-<span class="muted"><p>in <strong>SomeProjectName</strong> project</p></span>
-
+<h3 data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}<span class="muted"> dataset</span></h3>
+<span class="muted">in <strong>SomeProjectName</strong> project</span>
 
 <h4>Attributes and facts</h4>
 
@@ -14,14 +13,14 @@
             <!--<i class="icon-star-empty"></i>-->
             <!--</span>-->
         </td>
-        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{attribute.title}}</a></td>
+        <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}" data-toggle="tooltip" title="{{attribute.id}}">{{attribute.title}}</a></td>
         <td class="text-right">
             <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
         </td>
     </tr>
     <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
         <td><i class="icon-cog"></i></td>
-        <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" target="_blank">{{fact.title}}</a></td>
+        <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" data-toggle="tooltip" title="{{fact.id}}">{{fact.title}}</a></td>
         <td class="text-right">
             <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
         </td>
@@ -53,7 +52,7 @@
         <td><i class="icon-share"></i></td>
         <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}">{{reference}}</a></td>
         <td class="text-right">
-            <button-delete body="Are you sure you want to delete the reference?" fn="removeReference(reference)"/>
+            <button-delete body="Are you sure you want to delete the reference?" fn="removeReferencereference)"/>
         </td>
     </tr>
     </tbody>

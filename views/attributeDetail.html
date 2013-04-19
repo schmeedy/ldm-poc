@@ -1,22 +1,38 @@
-<form name="myForm">
+<h3 data-toggle="tooltip" title="{{attribute.id}}">{{attribute.title}}</h3>
+<span class="muted">in <strong>{{selectedDataset.title}}</strong> dataset</span>
 
-    <div class="control-group" ng-class="{error: myForm.title.$invalid}">
-        <label>Title</label>
-        <input type="text" name="title" ng-model="attribute.title" required>
-    <span ng-show="myForm.title.$error.required" class="help-inline">
-        Required</span>
-    </div>
+<label class="checkbox">
+    <input type="checkbox"> Connection point
+</label>
 
-    <div class="control-group" ng-class="{error: myForm.id.$invalid}">
-        <label>Id</label>
-        <input type="text" disabled="true" name="title" ng-model="attribute.id" required>
-    </div>
+<h4>Labels</h4>
 
-    <br>
-    <a href="#/dataset/{{selectedDataset.id}}" class="btn">Cancel</a>
-    <button ng-click="save()" ng-disabled="isClean() || myForm.$invalid"
-            class="btn btn-primary">Save
-    </button>
-    <button ng-click="destroy()" ng-show="attribute.id" class="btn btn-danger">Delete
-    </button>
-</form>
+<table class="table table-striped">
+    <tbody>
+    <tr ng-repeat="label in attribute.labels | orderBy:'title'">
+        <td>
+            <i class="icon-list"></i>
+        </td>
+        <td><a href="">{{label.title}}</a></td>
+        <td class="text-right">
+            <button-delete body="Are you sure you want to delete the label?" fn="removeLabel(label)"/>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table">
+    <tbody>
+    <tr>
+        <form ng-submit="addLabel(newTitle)">
+            <td>
+                <input type="text" ng-model="newTitle" size="30" placeholder="Add Label">
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+
+<a href="#/" class="btn">Back</a>
+
+<br>
