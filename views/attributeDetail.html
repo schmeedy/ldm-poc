@@ -5,34 +5,28 @@
     <input type="checkbox"> Connection point
 </label>
 
-<h4>Labels</h4>
-
-<table class="table table-striped">
+<h4><em>Labels</em></h4>
+<table class="table">
     <tbody>
     <tr ng-repeat="label in attribute.labels | orderBy:'title'">
         <td>
-            <i class="icon-list"></i>
+            <i class="icon-tag"></i>
         </td>
-        <td><a href="">{{label.title}}</a></td>
+        <td><a href="" data-toggle="tooltip" title="{{label.id}}">{{label.title}}</a></td>
         <td class="text-right">
             <button-delete body="Are you sure you want to delete the label?" fn="removeLabel(label)"/>
         </td>
     </tr>
     </tbody>
-</table>
-
-<table class="table">
-    <tbody>
+    <tfoot>
     <tr>
-        <form ng-submit="addLabel(newTitle)">
-            <td>
-                <input type="text" ng-model="newTitle" size="30" placeholder="Add Label">
-            </td>
-        </form>
+        <td colspan="3">
+            <form ng-submit="addLabel(newLabelTitle)">
+                <input class="dataset-editbox" type="text" ng-model="newLabelTitle" size="30" placeholder="Add Label">
+            </form>
+        </td>
     </tr>
-    </tbody>
+    </tfoot>
 </table>
 
-<a href="#/" class="btn">Back</a>
-
-<br>
+<a href="#/dataset/{{selectedDataset.id}}" class="btn"><i class="icon-chevron-left"></i> Back to the dataset detail</a>

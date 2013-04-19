@@ -146,11 +146,27 @@ function MainCtrl($scope, Utils) {
                 {
                     id: "some.attribute1",
                     title: "some attribute 1",
-                    connectionPoint: true
+                    connectionPoint: true,
+                    labels: [
+                        {
+                            id: "label1",
+                            title: "label 1"
+                        },
+                        {
+                            id: "label2",
+                            title: "label2"
+                        }
+                    ]
                 },
                 {
                     id: "some.other.attribute",
-                    title: "some other attribute"
+                    title: "some other attribute",
+                    labels: [
+                        {
+                            id: "label3",
+                            title: "label3"
+                        }
+                    ]
                 }
             ],
 
@@ -171,11 +187,14 @@ function MainCtrl($scope, Utils) {
         {
             id: "dataset.department",
             title: "Department",
+            attributes: [],
+            facts: [],
             references: []
         }
-    ];
+    ]
+    ;
 
-    // actually selected dataset (selected from canvas or from property editor)
+// actually selected dataset (selected from canvas or from property editor)
     $scope.selectedDataset = null;
 
 
