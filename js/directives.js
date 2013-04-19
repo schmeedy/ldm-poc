@@ -5,6 +5,7 @@ angular.module('deleteButton', []).directive('buttonDelete', function($compile, 
         template: '<a href="" class="button-delete"><i style="margin-top: 4px;" class="icon-remove"></i></a>',
         link: function(scope, element, attrs) {
             element.clickover({
+                placement: 'bottom',
                 global: true,
                 html: true,
                 title: 'Action confirmation',
