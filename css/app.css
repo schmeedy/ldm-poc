@@ -28,3 +28,9 @@
 table .dataset-editbox {
     width: 97%;
 }
+
+.spinner {
+    position: relative;
+    left: 50%;
+    top: 200px;
+}

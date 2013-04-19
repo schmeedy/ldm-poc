@@ -403,6 +403,7 @@
 <script src="js/LdmPropertyEditor.js"></script>
 <script src="js/directives.js"></script>
 
+<script src="http://fgnass.github.io/spin.js/dist/spin.min.js"></script>
 <script src="js/diagram/ZoomToolbar.js"></script>
 <script src="js/diagram/AbstractListFeatureSynchronizer.js"></script>
 <script src="js/diagram/figure/TextEditor.js"></script>
@@ -432,7 +433,7 @@
 </div>
 
     <div class="container" ng-controller="MainCtrl">
-        <div class="navbar toolbar">
+        <div id="top-bar" class="navbar toolbar">
             <div class="navbar-inner">
                 <form class="navbar-form pull-left" ng-submit="addDataset(newDatasetTitle,newDatasetType)">
                     <buttons-radio class="btn-group" data-toggle="buttons-radio" model="newDatasetType"
