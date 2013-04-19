@@ -1,5 +1,12 @@
+// initialize root namespace
+var ldm = {
+    diagram: {
+        figure: {}
+    }
+};
+
 $(window).load(function() {
-    var diagram = new LdmDiagram("diagram-canvas", "diagram-sematic-model");
+    var diagram = new ldm.diagram.LdmDiagram("diagram-canvas", "diagram-sematic-model");
     diagram.reload();
 });
 
