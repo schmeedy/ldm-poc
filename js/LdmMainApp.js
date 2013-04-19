@@ -11,7 +11,7 @@ $(window).load(function() {
 });
 
 // main module
-var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio']).
+var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio', 'model']).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
@@ -125,6 +125,10 @@ ldmApp.factory('Utils', function() {
             titles = fieldTitle.split(/[;,]/);
             for (var i = 0; i < titles.length; i++) {
                 singleTitle = titles[i];
+                if (!dataset[fieldsPropertyName]) {
+                    dataset[fieldsPropertyName] = [];
+                }
+
                 dataset[fieldsPropertyName].push({
                     id: this.uuid(fieldType, singleTitle, allDatasets),
                     title: singleTitle
@@ -136,75 +140,21 @@ ldmApp.factory('Utils', function() {
 
 
 // main controller responsible for the whole app
-function MainCtrl($scope, $location, Utils) {
-    // mocks
-    $scope.datasets = [
-        {
-            id: "dataset.person",
-            title: "Person",
-            attributes: [
-                {
-                    id: "some.attribute1",
-                    title: "some attribute 1",
-                    connectionPoint: true,
-                    labels: [
-                        {
-                            id: "label1",
-                            title: "label 1"
-                        },
-                        {
-                            id: "label2",
-                            title: "label2"
-                        }
-                    ]
-                },
-                {
-                    id: "some.other.attribute",
-                    title: "some other attribute",
-                    labels: [
-                        {
-                            id: "label3",
-                            title: "label3"
-                        }
-                    ]
-                }
-            ],
+function MainCtrl($scope, Utils, LdmResource) {
 
-            facts: [
-                {
-                    id: "number.of.brothers",
-                    title: "number of brothers"
-                },
-                {
-                    id: "age",
-                    title: "age"
-                }
-            ],
-            references: [
-                'dataset.department'
-            ]
-        },
-        {
-            id: "dataset.department",
-            title: "Department",
-            attributes: [],
-            facts: [],
-            references: []
-        },
-        {
-            id: "dataset.accessory",
-            title: "Accessory",
-            references: []
-        },
-        {
-            id: "dataset.country",
-            title: "Country",
-            references: []
-        }
-    ]
-    ;
+    $scope.datasets = [];
 
-// actually selected dataset (selected from canvas or from property editor)
+    $scope.datasets = mock.ldm.model.objects;
+//    LdmResource.get({}, function(data) {
+//        $scope.datasets = data.ldm.model.datasets;
+//        $scope.project = {
+//            id: data.ldm.links.project.replace("/gdc/projects/", ""),
+//            title: data.ldm.projectMeta.title
+//        };
+//    });
+
+
+    // actually selected dataset (selected from canvas or from property editor)
     $scope.selectedDataset = null;
 
 
@@ -228,7 +178,7 @@ function MainCtrl($scope, $location, Utils) {
         }
     };
 
-    $scope.selectDataset = function(dataset) {
+	$scope.selectDataset = function(dataset) {
         if ((!$scope.selectedDataset && !dataset) ||
             $scope.selectedDataset && dataset && ($scope.selectedDataset.id === dataset.id)) {
             return;
