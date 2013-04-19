@@ -26,7 +26,7 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
         }
     ];
 
-    $scope.fieldType = 'attribute';
+    $scope.fieldType = $scope.fieldTypes[0].value;
 
 
     $scope.removeAttribute = function(attribute) {
