@@ -35,6 +35,13 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
         }
     };
 
+    $scope.removeReference = function(referenceId) {
+        var index = $scope.selectedDataset.references.indexOf(referenceId);
+        if (index >= 0) {
+            $scope.selectedDataset.references.splice(index, 1);
+        }
+    };
+
     $scope.removeFact = function(fact) {
         var index = $scope.selectedDataset.facts.indexOf(fact);
         if (index >= 0) {
