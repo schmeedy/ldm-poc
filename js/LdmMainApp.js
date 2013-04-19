@@ -141,17 +141,38 @@ ldmApp.factory('Utils', function() {
 
 
 // main controller responsible for the whole app
-function MainCtrl($scope, $location, Utils, LdmResource) {
+function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollResource, LdmResultResource) {
+
     $scope.datasets = [];
 
-    $scope.datasets = mock.ldm.model.objects;
-//    LdmResource.get({}, function(data) {
-//        $scope.datasets = data.ldm.model.datasets;
-//        $scope.project = {
-//            id: data.ldm.links.project.replace("/gdc/projects/", ""),
-//            title: data.ldm.projectMeta.title
-//        };
-//    });
+    $scope.project = {id: 'zgfs16g7iy7hkyeu0kkphblqfynjznw4'};
+
+    LdmMainResource.get({projectId: $scope.project.id}, function(data) {
+        var taskId = data.uri.replace("/gdc/projects/" + $scope.project.id + "/webldm/view/", ""),
+            projectId = $scope.project.id;
+
+        function poll() {
+            LdmPollResource.get({projectId: projectId, taskId: taskId}, function(taskData) {
+                console.log(taskData);
+                if (taskData.status !== 'FINISHED') {
+                    $timeout(poll, 1000);
+                    return;
+                }
+
+                LdmResultResource.get({projectId: projectId, taskId: taskId}, function(resultData) {
+                    $scope.datasets = resultData.ldm.model.datasets;
+                    $scope.project = {
+                        id: resultData.ldm.links.project.replace("/gdc/projects/", ""),
+                        title: resultData.ldm.projectMeta.title
+                    };
+                });
+            });
+        }
+
+        poll();
+    });
+
+
     // actually selected dataset (selected from canvas or from property editor)
     $scope.selectedDataset = null;
 
