@@ -30,16 +30,20 @@ ldm.diagram.AbstractListFeatureSynchronizer = Class.extend({
         }
     },
 
-    getModels: function() {},
+    getModels: function() {
+    },
 
-    getViews: function() {},
+    getViews: function() {
+    },
 
     getModelIdFromView: function(view) {
         return view.model.id;
     },
 
-    createView: function(model) {},
+    createView: function(model) {
+    },
 
-    destroyView: function(view) {}
+    destroyView: function(view) {
+    }
 
 });

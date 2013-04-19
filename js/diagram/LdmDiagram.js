@@ -4,6 +4,9 @@ ldm.diagram.LdmDiagram = function(canvasId, semanticModelId) {
     diagram.scope = angular.element($("#" + canvasId).get(0)).scope();
 
     diagram.canvas = new draw2d.Canvas(canvasId);
+
+    diagram.toolbar = new ldm.diagram.Toolbar("toolbar", this, diagram.canvas);
+
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 
     var selectionPolicy = new draw2d.policy.canvas.BoundingboxSelectionPolicy();

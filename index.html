@@ -403,6 +403,7 @@
 <script src="js/LdmPropertyEditor.js"></script>
 <script src="js/directives.js"></script>
 
+<script src="js/diagram/ZoomToolbar.js"></script>
 <script src="js/diagram/AbstractListFeatureSynchronizer.js"></script>
 <script src="js/diagram/figure/TextEditor.js"></script>
 <script src="js/diagram/figure/DatasetFigure.js"></script>
@@ -449,6 +450,7 @@
                     <div ng-repeat="dataset in datasets" class="semantic" data-id="{{dataset.id}}"></div>
                 </div>
                 <div id="diagram-canvas"></div>
+                <div id="toolbar"></div>
             </div>
             <div class="span4" style>
                 <div ng-view></div>
