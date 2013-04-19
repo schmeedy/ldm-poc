@@ -1,11 +1,11 @@
-ldm.diagram.LdmDiagram = function(canvasId, semanticModelId) {
+ldm.diagram.LdmDiagram = function(canvasId, zoomToolbarId, semanticModelId) {
     var diagram = this;
 
     diagram.scope = angular.element($("#" + canvasId).get(0)).scope();
 
     diagram.canvas = new draw2d.Canvas(canvasId);
 
-    diagram.toolbar = new ldm.diagram.Toolbar("toolbar", this, diagram.canvas);
+    diagram.toolbar = new ldm.diagram.Toolbar(zoomToolbarId, this, diagram.canvas);
 
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 

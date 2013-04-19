@@ -6,7 +6,7 @@ var ldm = {
 };
 
 $(window).load(function() {
-    var diagram = new ldm.diagram.LdmDiagram("diagram-canvas", "diagram-sematic-model");
+    var diagram = new ldm.diagram.LdmDiagram("diagram-canvas", "zoom-toolbar", "diagram-sematic-model");
     diagram.reload();
 });
 
