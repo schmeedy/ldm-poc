@@ -1,4 +1,4 @@
-$(window).load(function () {
+$(window).load(function() {
     var diagram = new LdmDiagram("diagram-canvas", "diagram-sematic-model");
     diagram.reload();
 });
@@ -14,10 +14,11 @@ var ldmApp = angular.module('ldm', ['deleteButton']).
             otherwise({redirectTo: '/'});
     });
 
-// TODO enforce uniqueness
 // utility service for sharing common methods
 ldmApp.factory('Utils', function() {
     return {
+
+        // generate id for given type (dataset/attribute,...) and item title; id is unique across
         uuid: function(type, title, datasets) {
             var sections = [type];
 
@@ -26,19 +27,60 @@ ldmApp.factory('Utils', function() {
             }
 
             if (title.match(/^[a-z][a-z0-9_\\.]*$/)) {
-                return sections.concat(title).join(".");
+                return this.makeUnique(sections.concat(title).join("."), datasets);
             }
 
             sections = sections.concat(title.split("."));
             for (var i = 0; i < sections.length; i++) {
                 sections[i] = sections[i].replace(/[^a-zA-Z0-9_]/g, "");
                 sections[i] = sections[i].replace(/^[0-9_]*/g, "");
-
             }
 
-            return sections.join(".");
+            return this.makeUnique(sections.join("."), datasets);
+
         },
 
+        // ensure id is unique, if not, append index
+        makeUnique: function(id, datasets) {
+            var incrementalId = id,
+                index = 1;
+
+            while (!this.isUnique(incrementalId, datasets)) {
+                incrementalId = id + index++;
+            }
+
+            return incrementalId;
+        },
+
+        // return whether id is unique
+        isUnique: function(id, datasets) {
+            var i, j;
+
+            for (i = 0; i < datasets.length; i++) {
+                if (datasets[i].id === id) {
+                    return false;
+                }
+
+                if (datasets.facts) {
+                    for (j = 0; j < datasets.facts.length; j++) {
+                        if (datasets[i].facts[j].id === id) {
+                            return false;
+                        }
+                    }
+                }
+
+                if (datasets.attributes) {
+                    for (j = 0; j < datasets.attributes.length; j++) {
+                        if (datasets[i].attributes[j].id === id) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        },
+
+        // insert dataset with given into model, unique id is generated automatically
         addDataset: function(scope, datasetTitle) {
             if (!datasetTitle) {
                 return;
@@ -48,7 +90,7 @@ ldmApp.factory('Utils', function() {
             for (var i = 0; i < datasetTitles.length; i++) {
                 var singleDatasetTitle = datasetTitles[i];
                 scope.datasets.push({
-                    id: this.uuid('dataset', singleDatasetTitle),
+                    id: this.uuid('dataset', singleDatasetTitle, scope.datasets),
                     title: singleDatasetTitle
                 });
             }
@@ -108,7 +150,7 @@ function MainCtrl($scope, Utils) {
     };
 
     $scope.removeDataset = function(dataset) {
-        for (var i = 0; i < $scope.datasets.length; i ++) {
+        for (var i = 0; i < $scope.datasets.length; i++) {
             var ds = $scope.datasets[i];
             if (ds.id === dataset.id) {
                 $scope.datasets.splice(i, 1);
