@@ -1,4 +1,6 @@
 function DatasetListCtrl($scope, Utils) {
+    $scope.$parent.selectedDataset = null;
+
     $scope.remove = function(dataset) {
         $scope.removeDataset(dataset);
     };

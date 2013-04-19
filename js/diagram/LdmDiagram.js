@@ -6,6 +6,12 @@ ldm.diagram.LdmDiagram = function(canvasId, semanticModelId) {
     diagram.canvas = new draw2d.Canvas(canvasId);
     diagram.canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGeometryEditPolicy());
 
+    var selectionPolicy = new draw2d.policy.canvas.BoundingboxSelectionPolicy();
+    diagram.canvas.installEditPolicy(selectionPolicy);
+
+    var selectionSynchronizer = new ldm.diagram.SelectionSynchronizer(this, selectionPolicy, this.scope);
+    selectionSynchronizer.start();
+
     diagram.getDatasets = function() {
         var datasets = new draw2d.util.ArrayList();
         diagram.canvas.figures.each(function(i, figure) {
@@ -68,6 +74,7 @@ ldm.diagram.LdmDiagram = function(canvasId, semanticModelId) {
 
     diagram.reload = function() {
         datasetSynchronizer.synchronize();
+        diagram.scope.$digest();
     };
 
     function findEmptySpace() {

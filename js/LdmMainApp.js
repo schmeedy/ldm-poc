@@ -136,7 +136,7 @@ ldmApp.factory('Utils', function() {
 
 
 // main controller responsible for the whole app
-function MainCtrl($scope, Utils) {
+function MainCtrl($scope, $location, Utils) {
     // mocks
     $scope.datasets = [
         {
@@ -190,6 +190,16 @@ function MainCtrl($scope, Utils) {
             attributes: [],
             facts: [],
             references: []
+        },
+        {
+            id: "dataset.accessory",
+            title: "Accessory",
+            references: []
+        },
+        {
+            id: "dataset.country",
+            title: "Country",
+            references: []
         }
     ]
     ;
@@ -215,6 +225,18 @@ function MainCtrl($scope, Utils) {
                     ds.references.splice(index, 1);
                 }
             }
+        }
+    };
+
+    $scope.selectDataset = function(dataset) {
+        if ((!$scope.selectedDataset && !dataset) ||
+            $scope.selectedDataset && dataset && ($scope.selectedDataset.id === dataset.id)) {
+            return;
+        }
+        if (dataset) {
+            $location.path("/dataset/" + dataset.id);
+        } else {
+            $location.path("/");
         }
     };
 }
