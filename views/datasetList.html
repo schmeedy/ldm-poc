@@ -1,14 +1,16 @@
-<p>GoodData project</p>
-<p><strong>SomeProjectName</strong></p>
-<span>id:</span><span>kwehjejk1h23welkrjsf9</span>
+<h3>SomeProjectName</h3>
+<span class="muted">id: </span><span>kwehjejk1h23welkrjsf9</span>
 
-<h3>Datasets</h3>
+<!-- two brs really ? -->
+<br>
+<br>
+<h4><em>Datasets</em></h4>
 <table class="table">
     <tbody>
     <tr ng-repeat="dataset in datasets | orderBy:'title'">
         <td><i class="icon-list"></i></td>
         <td><a href="#/dataset/{{dataset.id}}">{{dataset.title}}</a></td>
-        <td>
+        <td class="text-right">
             <button-delete body="Are you sure you want to delete the dataset" fn="remove(dataset)"/>
         </td>
     </tr>
@@ -16,12 +18,10 @@
     <tfoot>
     <tr>
         <td></td>
-        <td>
+        <td colspan="2">
             <form ng-submit="addDataset(newDatasetTitleFromEditor)">
-                <input type="text" ng-model="newDatasetTitleFromEditor" size="30"
-                       placeholder="Add Dataset">
+                <input type="text" ng-model="newDatasetTitleFromEditor" size="30" placeholder="Add Dataset">
             </form>
-
         </td>
     </tr>
     </tfoot>

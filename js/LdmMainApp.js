@@ -1,3 +1,8 @@
+$(window).load(function () {
+    var diagram = new LdmDiagram("diagram-canvas", "diagram-sematic-model");
+    diagram.reload();
+});
+
 // main module
 var ldmApp = angular.module('ldm', ['deleteButton']).
     config(function($routeProvider) {
