@@ -1,4 +1,17 @@
-<h3 data-toggle="tooltip" title="{{attribute.id}}">{{attribute.title}}</h3>
+<div ng-hide="editorEnabled">
+    <h3>
+        <span data-toggle="tooltip" title="{{attribute.id}}">{{attribute.title}}</span>
+        <a href="" ng-click="editorEnabled=!editorEnabled"><i class="icon-pencil"></i></a>
+    </h3>
+</div>
+<div class="label-editor" ng-show="editorEnabled">
+    <form ng-submit="editorEnabled=!editorEnabled">
+        <input type="text" class="field-editbox" ng-model="attribute.title">
+        <a href="" class="btn btn-info" ng-click="editorEnabled=!editorEnabled">Ok</a>
+    </form>
+</div>
+
+
 <span class="muted">in <strong data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}</strong> dataset</span>
 
 <label class="checkbox">

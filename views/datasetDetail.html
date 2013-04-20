@@ -1,10 +1,21 @@
-<h3 data-toggle="tooltip" title="{{selectedDataset.id}}">
-    {{selectedDataset.title}}
+<div ng-hide="editorEnabled">
+    <h3>
+        <span data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}</span>
     <span class="muted" ng-switch on="selectedDataset.type">
         <span ng-switch-when="dataset">Dataset</span>
         <span ng-switch-when="date-dimension">Date</span>
     </span>
-</h3>
+        <a href="" ng-click="editorEnabled=!editorEnabled"><i class="icon-pencil"></i></a>
+    </h3>
+</div>
+<div class="label-editor" ng-show="editorEnabled">
+    <form ng-submit="editorEnabled=!editorEnabled">
+        <input type="text" class="field-editbox" ng-model="selectedDataset.title">
+        <a href="" class="btn btn-info" ng-click="editorEnabled=!editorEnabled">Ok</a>
+    </form>
+</div>
+
+
 <span class="muted">in <strong>{{project.title}}</strong> project</span>
 
 <div ng-show="selectedDataset.type == 'dataset'">
