@@ -86,6 +86,16 @@
 
             this.onDoubleClick = function () { titleEditor.onDoubleClick(); };
 
+            var self = this;
+
+            titleEditor.onMouseEnter = function() {
+                self.onMouseEnter();
+            };
+
+            titleEditor.onMouseLeave = function() {
+                self.onMouseLeave();
+            };
+
             this.tooltip = null;
         },
 
