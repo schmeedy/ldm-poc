@@ -61,12 +61,15 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
 }
 
 
-function AttributeDetailsCtrl($scope, $routeParams, Utils) {
+function AttributeDetailsCtrl($scope, $location, $routeParams, Utils) {
     if (!$scope.selectedDataset) {
         $scope.$parent.selectedDataset = findDatasetById($scope.datasets, $routeParams.datasetId);
     }
 
     $scope.attribute = findInDatasetById($scope.selectedDataset, 'attributes', $routeParams.attributeId);
+    if (!$scope.attribute) {
+        $location.path("/dataset/" + $scope.selectedDataset.id);
+    }
 
 
     $scope.addLabelToAttribute = function(labelTitle, attribute) {

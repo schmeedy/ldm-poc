@@ -12,7 +12,6 @@ var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio', 'model']).
             when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
             when('/dataset/:datasetId', {controller: DatasetDetailsCtrl, templateUrl: 'views/datasetDetail.html'}).
             when('/dataset/:datasetId/attribute/:attributeId', {controller: AttributeDetailsCtrl, templateUrl: 'views/attributeDetail.html'}).
-            when('/dataset/:datasetId/fact/:factId', {controller: FactDetailsCtrl, templateUrl: 'views/factDetail.html'}).
             otherwise({redirectTo: '/'});
     });
 
@@ -56,7 +55,7 @@ ldmApp.factory('Utils', function() {
 
         // return whether id is unique
         isUnique: function(id, datasets) {
-            var i, j;
+            var i, j, k;
 
             for (i = 0; i < datasets.length; i++) {
                 if (datasets[i].id === id) {
@@ -73,8 +72,16 @@ ldmApp.factory('Utils', function() {
 
                 if (datasets[i].attributes) {
                     for (j = 0; j < datasets[i].attributes.length; j++) {
-                        if (datasets[i].attributes[j].id === id) {
+                        var attribute = datasets[i].attributes[j];
+                        if (attribute.id === id) {
                             return false;
+                        }
+                        if (attribute.labels) {
+                            for (k = 0; k < attribute.labels.length; k++) {
+                                if (attribute.labels[k].id === id) {
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
@@ -91,6 +98,9 @@ ldmApp.factory('Utils', function() {
             var datasetTitles = datasetTitle.split(/[;,]/);
             for (var i = 0; i < datasetTitles.length; i++) {
                 var singleDatasetTitle = datasetTitles[i];
+                if (!singleDatasetTitle) {
+                    continue;
+                }
                 allDatasets.push({
                     id: this.uuid('dataset', singleDatasetTitle, allDatasets),
                     title: singleDatasetTitle,
@@ -121,6 +131,9 @@ ldmApp.factory('Utils', function() {
             titles = fieldTitle.split(/[;,]/);
             for (var i = 0; i < titles.length; i++) {
                 singleTitle = titles[i];
+                if (!singleTitle) {
+                    continue;
+                }
                 if (!dataset[fieldsPropertyName]) {
                     dataset[fieldsPropertyName] = [];
                 }
@@ -128,6 +141,27 @@ ldmApp.factory('Utils', function() {
                 dataset[fieldsPropertyName].push({
                     id: this.uuid(fieldType, singleTitle, allDatasets),
                     title: singleTitle
+                });
+            }
+        },
+
+        addLabelToAttribute: function(allDatasets, attribute, labelTitle) {
+            if (!labelTitle) {
+                return;
+            }
+
+            var labelTitles = labelTitle.split(/[;,]/);
+            for (var i = 0; i < labelTitles.length; i++) {
+                var singleLabelTitle = labelTitles[i];
+                if (!singleLabelTitle) {
+                    continue;
+                }
+                if (!attribute.labels) {
+                    attribute.labels = [];
+                }
+                attribute.labels.push({
+                    id: this.uuid('label', singleLabelTitle, allDatasets),
+                    title: singleLabelTitle
                 });
             }
         }
