@@ -14,7 +14,7 @@
     <table class="table table-striped">
         <tbody>
         <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
-            <td>
+            <td class="double-icon">
                 <i class="icon-list"></i>
                 <i ng-show="attribute.connectionPoint" class="icon-star"></i>
                 <!--<span ng-hide="attribute.connectionPoint">-->
@@ -23,15 +23,15 @@
             </td>
             <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}" data-toggle="tooltip"
                    title="{{attribute.id}}">{{attribute.title}}</a></td>
-            <td class="text-right">
+            <td class="icon text-right">
                 <button-delete body="Are you sure you want to delete the attribute?" fn="removeAttribute(attribute)"/>
             </td>
         </tr>
         <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
-            <td><i class="icon-cog"></i></td>
+            <td class="double-icon"><i class="icon-cog"></i></td>
             <td><a href="#/dataset/{{selectedDataset.id}}/fact/{{fact.id}}" data-toggle="tooltip" title="{{fact.id}}">{{fact.title}}</a>
             </td>
-            <td class="text-right">
+            <td class="icon text-right">
                 <button-delete body="Are you sure you want to delete the fact?" fn="removeFact(fact)"/>
             </td>
         </tr>
@@ -47,11 +47,11 @@
                                    options='fieldTypes'></buttons-radio>
                 </td>
                 <td>
-                    <input class="input-medium" type="text" ng-model="newTitle" placeholder="Add Attribute or Fact">
+                    <input class="field-editbox" type="text" ng-model="newTitle" placeholder="Add Attribute or Fact">
                 </td>
                 <td>
                     <a class="btn btn-info" ng-click="addField(newTitle,fieldType)"
-                        ng-class="{true: 'disabled', false: ''}[newTitle == null || newTitle.length == 0]">
+                       ng-class="{true: 'disabled', false: ''}[newTitle == null || newTitle.length == 0]">
 
                         <i class="icon-plus"></i>
                     </a>
@@ -70,7 +70,8 @@
                 <td><i class="icon-share"></i></td>
                 <td><a href="#/dataset/{{reference}}">{{reference}}</a></td>
                 <td class="text-right">
-                    <button-delete body="Are you sure you want to delete the reference?" fn="removeReferencereference)"/>
+                    <button-delete body="Are you sure you want to delete the reference?"
+                                   fn="removeReferencereference)"/>
                 </td>
             </tr>
             </tbody>

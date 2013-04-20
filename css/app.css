@@ -25,7 +25,7 @@
     text-align: right;
 }
 
-table .dataset-editbox {
+table .field-editbox {
     width: 97%;
 }
 
@@ -33,4 +33,12 @@ table .dataset-editbox {
     position: relative;
     left: 50%;
     top: 200px;
+}
+
+.table .icon {
+    width: 20px;
+}
+
+.table .double-icon {
+    width: 40px;
 }

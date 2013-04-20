@@ -9,11 +9,11 @@
 <table class="table">
     <tbody>
     <tr ng-repeat="label in attribute.labels | orderBy:'title'">
-        <td>
+        <td class="icon">
             <i class="icon-tag"></i>
         </td>
         <td><a href="" data-toggle="tooltip" title="{{label.id}}">{{label.title}}</a></td>
-        <td class="text-right">
+        <td class="icon text-right">
             <button-delete body="Are you sure you want to delete the label?" fn="removeLabel(label)"/>
         </td>
     </tr>
