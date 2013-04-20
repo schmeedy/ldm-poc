@@ -34,12 +34,12 @@
 }
 
 table .field-editbox {
-    width: 97%;
+    width: 97%; /*uff*/
 }
 
 .editable-colum .field-editbox {
     margin-bottom: 0px;
-    width: 80%
+    width: 79% /*uff*/
 }
 
 .spinner {
