@@ -1,5 +1,5 @@
 <h3 data-toggle="tooltip" title="{{attribute.id}}">{{attribute.title}}</h3>
-<span class="muted">in <strong>{{selectedDataset.title}}</strong> dataset</span>
+<span class="muted">in <strong data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}</strong> dataset</span>
 
 <label class="checkbox">
     <input type="checkbox"> Connection point
@@ -14,19 +14,30 @@
         </td>
         <td><a href="" data-toggle="tooltip" title="{{label.id}}">{{label.title}}</a></td>
         <td class="icon text-right">
-            <button-delete body="Are you sure you want to delete the label?" fn="removeLabel(label)"/>
+            <button-delete body="Are you sure you want to delete the label?" fn="removeLabelFromAttribute(label, attribute)"/>
         </td>
     </tr>
     </tbody>
-    <tfoot>
-    <tr>
-        <td colspan="3">
-            <form ng-submit="addLabel(newLabelTitle)">
-                <input class="dataset-editbox" type="text" ng-model="newLabelTitle" size="30" placeholder="Add Label">
-            </form>
-        </td>
-    </tr>
-    </tfoot>
 </table>
 
-<a href="#/dataset/{{selectedDataset.id}}" class="btn"><i class="icon-chevron-left"></i> Back to the dataset detail</a>
+
+<!-- todo: remove table layouting-->
+<table class="table">
+    <tbody>
+    <tr>
+        <form ng-submit="addLabelToAttribute(newLabelTitle,attribute)">
+            <td>
+                <input class="field-editbox" type="text" ng-model="newLabelTitle" placeholder="Add Label">
+            </td>
+            <td>
+                <a class="btn btn-info" ng-click="addLabelToAttribute(newLabelTitle,attribute)"
+                   ng-class="{true: 'disabled', false: ''}[newTitle == null || newTitle.length == 0]">
+                    <i class="icon-plus"></i>
+                </a>
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+
+<a href="#/dataset/{{selectedDataset.id}}" class="btn"><i class="icon-chevron-left"></i> Backto the dataset detail</a>
