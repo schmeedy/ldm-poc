@@ -28,9 +28,9 @@
 <table class="table">
     <tbody>
     <tr>
-        <form ng-submit="addDataset(newDatasetTitleFromEditor,newDatasetType)">
+        <form ng-submit="addDataset(newDatasetTitleFromEditor,newDatasetTypeFromEditor)">
             <td>
-                <buttons-radio class="btn-group" data-toggle="buttons-radio" model="newDatasetType"
+                <buttons-radio class="btn-group" data-toggle="buttons-radio" model="newDatasetTypeFromEditor"
                                options="datasetTypeOptions"></buttons-radio>
             </td>
             <td>
@@ -38,8 +38,8 @@
                        placeholder="Add Dataset or Date">
             </td>
             <td>
-                <a class="btn btn-info" ng-click="addDataset(newDatasetTitle,newDatasetType)"
-                   ng-class="{true: 'disabled', false: ''}[newDatasetTitle == null || newDatasetTitle.length == 0]">
+                <a class="btn btn-info" ng-click="addDataset(newDatasetTitleFromEditor,newDatasetTypeFromEditor)"
+                   ng-class="{true: 'disabled', false: ''}[newDatasetTitleFromEditor == null || newDatasetTitleFromEditor.length == 0]">
                     <i class="icon-plus"></i>
                 </a>
             </td>
