@@ -85,6 +85,8 @@
             this.addFigure(titleEditor, new draw2d.layout.locator.CenterLocator(this));
 
             this.onDoubleClick = function () { titleEditor.onDoubleClick(); };
+
+            this.tooltip = null;
         },
 
         isDateDimension: function() {
@@ -248,6 +250,72 @@
             }
 
             return this._super(request);
+        },
+
+        onMouseEnter: function() {
+            this.showTooltip();
+        },
+
+        onMouseLeave: function() {
+            this.hideTooltip();
+        },
+
+        setPosition: function(x, y) {
+            this._super(x, y);
+            this.positionTooltip();
+        },
+
+        hideTooltip: function() {
+            if (this.tooltip) {
+                this.tooltip.remove();
+            }
+            this.tooltip = null;
+        },
+
+
+        // TODO some icons ?
+        showTooltip: function() {
+            function constructTooltip(ds) {
+                var content = '<div class="modal ds-tooltip"><div class="modal-body"> <ul>',
+                    innerContent = '',
+                    i;
+
+                if (ds.attributes) {
+                    for (i = 0; i < ds.attributes.length; ++i) {
+                        innerContent += '<li>' + ds.attributes[i].title + "</li>";
+                    }
+                }
+
+                if (ds.facts) {
+                    for (i = 0; i < ds.facts.length; ++i) {
+                        innerContent += '<li>' + ds.facts[i].title + "</li>";
+                    }
+                }
+
+                if (!innerContent) {
+                    return null;
+                }
+
+                content += innerContent + '</div></ul></div>';
+                return content;
+            }
+
+            var tooltipContent = constructTooltip(this.model);
+            if (!tooltipContent) {
+                return;
+            }
+            this.tooltip = $(tooltipContent).appendTo('#diagram-canvas');
+            this.positionTooltip();
+        },
+
+        positionTooltip: function() {
+            if (!this.tooltip) {
+                return;
+            }
+            var width = this.tooltip.outerWidth(true);
+            var tPosX = this.getAbsoluteX() + this.getWidth() / 2 - width / 2 + 8;
+            var tPosY = this.getAbsoluteY() + this.getHeight() + 20;
+            this.tooltip.css({'top': tPosY, 'left': tPosX});
         }
 
     });

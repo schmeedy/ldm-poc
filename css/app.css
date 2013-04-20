@@ -46,3 +46,46 @@ table .field-editbox {
 body {
     padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
+
+.ds-tooltip {
+    position: relative;
+    background: rgb(228, 241, 228);
+    padding:5px;
+    opacity: 0.7;
+    max-width: 200px;
+    min-width: 100px;
+    width: auto;
+    margin: 0px;
+}
+
+.ds-tooltip .modal-body{
+    padding:0px;
+}
+
+.ds-tooltip:after,.tooltip:before {
+    bottom: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ds-tooltip:after {
+    border-color: rgba(136, 183, 213, 0);
+    border-bottom-color: #88b7d5;
+    border-width: 7px;
+    left: 50%;
+    margin-left: -7px;
+    opacity: 0.7;
+}
+
+.ds-tooltip:before {
+    border-color: rgba(194, 225, 245, 0);
+    border-bottom-color: #c2e1f5;
+    border-width: 13px;
+    left: 50%;
+    margin-left: -13px;
+    opacity: 0.7;
+}
