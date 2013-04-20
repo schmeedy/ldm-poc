@@ -170,7 +170,7 @@ ldmApp.factory('Utils', function() {
 
 
 // main controller responsible for the whole app
-function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollResource, LdmResultResource) {
+function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollResource, LdmResultResource, LdmUpdatePollResource) {
 
     var opts = {
         lines: 10, // The number of lines to draw
@@ -273,6 +273,28 @@ function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollRe
         } else {
             $location.path("/");
         }
+    };
+
+    $scope.synchronizeToProject = function() {
+        spinner.spin();
+        $("#top-bar").append(spinner.el);
+        LdmMainResource.update({projectId: $scope.project.id}, {ldm: {model: {datasets: $scope.datasets}}}, function(data) {
+            var taskId = data.uri.replace("/gdc/projects/" + $scope.project.id + "/webldm/update/", ""),
+                projectId = $scope.project.id;
+
+            function poll() {
+                LdmUpdatePollResource.get({projectId: projectId, taskId: taskId}, function(taskData) {
+                    console.log(taskData);
+                    if (taskData.status !== 'FINISHED') {
+                        $timeout(poll, 1000);
+                        return;
+                    }
+                    spinner.stop();
+                });
+            }
+
+            poll();
+        });
     };
 
     $(window).load(function() {
