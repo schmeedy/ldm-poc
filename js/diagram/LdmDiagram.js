@@ -76,8 +76,11 @@ ldm.diagram.LdmDiagram = function(canvasId, zoomToolbarId, semanticModelId) {
     datasetSynchronizer.init();
 
     diagram.reload = function() {
-        datasetSynchronizer.synchronize();
-        diagram.scope.$digest();
+        function asyncReload() {
+            datasetSynchronizer.synchronize();
+            diagram.scope.$digest();
+        }
+        setTimeout(asyncReload, 50);
     };
 
     function findEmptySpace() {

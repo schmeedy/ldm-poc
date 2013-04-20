@@ -5,11 +5,6 @@ var ldm = {
     }
 };
 
-$(window).load(function() {
-    var diagram = new ldm.diagram.LdmDiagram("diagram-canvas", "zoom-toolbar", "diagram-sematic-model");
-    diagram.reload();
-});
-
 // main module
 var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio', 'model']).
     config(function($routeProvider) {
@@ -186,6 +181,10 @@ function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollRe
                         title: resultData.ldm.projectMeta.title
                     };
                     spinner.stop();
+
+                    if ($scope.diagram) {
+                        $scope.diagram.reload();
+                    }
                 });
             });
         }
@@ -241,4 +240,9 @@ function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollRe
             $location.path("/");
         }
     };
+
+    $(window).load(function() {
+        $scope.diagram = new ldm.diagram.LdmDiagram("diagram-canvas", "zoom-toolbar", "diagram-sematic-model");
+        $scope.diagram.reload();
+    });
 }
