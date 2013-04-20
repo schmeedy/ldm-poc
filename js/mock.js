@@ -1,7 +1,7 @@
 var mock = {
     ldm: {
         model: {
-            objects: [
+            datasets: [
                 {
                     id: "dataset.person",
                     title: "Person",

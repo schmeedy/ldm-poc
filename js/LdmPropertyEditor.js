@@ -5,8 +5,8 @@ function DatasetListCtrl($scope, Utils) {
         $scope.removeDataset(dataset);
     };
 
-    $scope.addDataset = function(title) {
-        Utils.addDataset($scope.datasets, title);
+    $scope.addDataset = function(title, type) {
+        Utils.addDataset($scope.datasets, title, type);
         $scope.newDatasetTitleFromEditor = "";
     };
 }

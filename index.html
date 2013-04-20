@@ -439,12 +439,11 @@
                     <buttons-radio class="btn-group" data-toggle="buttons-radio" model="newDatasetType"
                         options="datasetTypeOptions"></buttons-radio>
 
-                    <input type="text" class="span2" ng-model="newDatasetTitle" placeholder="Title" />
+                    <input type="text" class="span2" ng-model="newDatasetTitle" placeholder="Add Dataset or Date" />
 
-                    <a class="btn btn-success" ng-click="addDataset(newDatasetTitle,newDatasetType)"
+                    <a class="btn btn-info" ng-click="addDataset(newDatasetTitle,newDatasetType)"
                        ng-class="{true: 'disabled', false: ''}[newDatasetTitle == null || newDatasetTitle.length == 0]">
-
-                        <i class="icon-plus"></i> Add
+                        <i class="icon-plus"></i>
                     </a>
                 </form>
             </div>
