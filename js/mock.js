@@ -23,7 +23,29 @@ var mock = {
                         {
                             id: "attr.department.id",
                             title: "Department ID",
-                            connectionPoint: true
+                            connectionPoint: true,
+                            labels: [
+                                {id: 'label.department.name',
+                                    title: "department name"
+                                },
+                                {id: 'label.department.code',
+                                    title: "department code"
+                                }
+                            ]
+                        },
+                        {
+                            id: "attr.car.id",
+                            title: "Car",
+                            connectionPoint: false
+                        },
+                        {
+                            id: "attr.town.id",
+                            title: "Town ID",
+                            labels: [
+                                {id: 'label.town.psc',
+                                    title: "town psc"
+                                }
+                            ]
                         }
                     ],
                     facts: [
