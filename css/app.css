@@ -37,6 +37,11 @@ table .field-editbox {
     width: 97%;
 }
 
+.editable-colum .field-editbox {
+    margin-bottom: 0px;
+    width: 80%
+}
+
 .spinner {
     position: relative;
     left: 50%;
@@ -49,6 +54,10 @@ table .field-editbox {
 
 .table .double-icon {
     width: 40px;
+}
+
+td form {
+    margin-bottom: 0px;
 }
 
 body {

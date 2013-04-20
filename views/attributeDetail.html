@@ -25,9 +25,18 @@
         <td class="icon">
             <i class="icon-tag"></i>
         </td>
-        <td><a href="" data-toggle="tooltip" title="{{label.id}}">{{label.title}}</a></td>
-        <td class="icon text-right">
-            <button-delete body="Are you sure you want to delete the label?" fn="removeLabelFromAttribute(label, attribute)"/>
+
+        <td ng-hide="labelEditorEnabled"><span data-toggle="tooltip" title="{{label.id}}">{{label.title}}</span></td>
+        <td ng-hide="labelEditorEnabled" class="double-icon text-right">
+            <a href="" ng-click="labelEditorEnabled=!labelEditorEnabled"><i class="icon-pencil"></i></a>
+            <button-delete body="Are you sure you want to delete the label?"
+                           fn="removeLabelFromAttribute(label, attribute)"/>
+        </td>
+        <td colspan="2" class="text-right editable-colum" ng-show="labelEditorEnabled">
+            <form ng-submit="labelEditorEnabled=!labelEditorEnabled">
+                <input type="text" class="field-editbox" ng-model="label.title">
+                <a href="" class="btn btn-info" ng-click="labelEditorEnabled=!labelEditorEnabled">Ok</a>
+            </form>
         </td>
     </tr>
     </tbody>
@@ -44,7 +53,7 @@
             </td>
             <td>
                 <a class="btn btn-info" ng-click="addLabelToAttribute(newLabelTitle,attribute)"
-                   ng-class="{true: 'disabled', false: ''}[newTitle == null || newTitle.length == 0]">
+                   ng-class="{true: 'disabled', false: ''}[newLabelTitle == null || newLabelTitle.length == 0]">
                     <i class="icon-plus"></i>
                 </a>
             </td>
