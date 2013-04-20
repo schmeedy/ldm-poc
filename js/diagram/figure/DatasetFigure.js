@@ -262,6 +262,16 @@
             return this._super(request);
         },
 
+        onDragStart: function(){
+            this.hideTooltip();
+            this._super();
+        },
+
+        onDragEnd: function(){
+            this._super();
+            this.showTooltip();
+        },
+
         onMouseEnter: function() {
             this.showTooltip();
         },
