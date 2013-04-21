@@ -6,7 +6,7 @@ var ldm = {
 };
 
 // main module
-var ldmApp = angular.module('ldm', ['deleteButton', 'buttonsRadio', 'model']).
+var ldmApp = angular.module('ldm', ['ldmDirectives', 'model']).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: DatasetListCtrl, templateUrl: 'views/datasetList.html'}).
