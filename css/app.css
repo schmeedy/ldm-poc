@@ -125,6 +125,10 @@ body {
     background-image: url("../img/cp_stroke.png");
 }
 
+.icon-ldm-fact {
+    background-image: url("../img/fact.png");
+}
+
 .pointer {
     cursor: pointer;
 }

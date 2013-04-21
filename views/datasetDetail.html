@@ -26,7 +26,7 @@
         <tbody>
         <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
             <td class="double-icon">
-                <i class="icon-list"></i>
+                <i class="icon-font"></i>
                 <i ng-show="attribute.connectionPoint" class="icon-ldm-cp"></i>
                 <span class="hide" show-when-hovering-parent>
                     <i ng-hide="attribute.connectionPoint" ng-click="setConnectionPoint(attribute)" class="icon-ldm-cp-stroke pointer"></i>
@@ -40,7 +40,7 @@
         </tr>
         <tr ng-repeat="fact in selectedDataset.facts | orderBy:'title'">
             <td class="icon">
-                <i class="icon-tag"></i>
+                <i class="icon-ldm-fact"></i>
             </td>
 
             <td ng-hide="factEditorEnabled"><span data-toggle="tooltip" title="{{fact.id}}">{{fact.title}}</span></td>

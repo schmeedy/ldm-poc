@@ -293,7 +293,6 @@
         },
 
 
-        // TODO some icons ?
         showTooltip: function() {
             function constructTooltip(ds) {
                 var content = '<div class="modal ds-tooltip"><div class="modal-body"> <ul class="unstyled">',
@@ -302,13 +301,13 @@
 
                 if (ds.attributes) {
                     for (i = 0; i < ds.attributes.length; ++i) {
-                        innerContent += '<li><i class="icon-list"/> ' + ds.attributes[i].title + "</li>";
+                        innerContent += '<li><i class="icon-font"/> ' + ds.attributes[i].title + "</li>";
                     }
                 }
 
                 if (ds.facts) {
                     for (i = 0; i < ds.facts.length; ++i) {
-                        innerContent += '<li><i class="icon-cog"/> ' + ds.facts[i].title + "</li>";
+                        innerContent += '<li><i class="icon-ldm-fact"/> ' + ds.facts[i].title + "</li>";
                     }
                 }
 
