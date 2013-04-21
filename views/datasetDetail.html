@@ -27,10 +27,10 @@
         <tr ng-repeat="attribute in selectedDataset.attributes | orderBy:'title'">
             <td class="double-icon">
                 <i class="icon-list"></i>
-                <i ng-show="attribute.connectionPoint" class="icon-star"></i>
-                <!--<span ng-hide="attribute.connectionPoint">-->
-                <!--<i class="icon-star-empty"></i>-->
-                <!--</span>-->
+                <i ng-show="attribute.connectionPoint" class="icon-ldm-cp"></i>
+                <span class="hide" show-when-hovering-parent>
+                    <i ng-hide="attribute.connectionPoint" ng-click="setConnectionPoint(attribute)" class="icon-ldm-cp-stroke pointer"></i>
+                </span>
             </td>
             <td><a href="#/dataset/{{selectedDataset.id}}/attribute/{{attribute.id}}" data-toggle="tooltip"
                    title="{{attribute.id}}">{{attribute.title}}</a></td>

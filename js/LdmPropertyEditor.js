@@ -60,6 +60,15 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
         Utils.addFieldToDataset($scope.datasets, $scope.selectedDataset, title, type);
         $scope.newTitle = '';
     };
+
+    $scope.setConnectionPoint = function(attribute) {
+        attribute.connectionPoint = true;
+        $.each($scope.selectedDataset.attributes, function(i, attr) {
+            if (attr.id !== attribute.id) {
+                attr.connectionPoint = false;
+            }
+        });
+    };
 }
 
 
