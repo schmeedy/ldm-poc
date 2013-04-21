@@ -62,12 +62,7 @@ function DatasetDetailsCtrl($scope, $routeParams, Utils) {
     };
 
     $scope.setConnectionPoint = function(attribute) {
-        attribute.connectionPoint = true;
-        $.each($scope.selectedDataset.attributes, function(i, attr) {
-            if (attr.id !== attribute.id) {
-                attr.connectionPoint = false;
-            }
-        });
+        Utils.setConnectionPoint($scope.selectedDataset, attribute);
     };
 }
 
@@ -92,6 +87,14 @@ function AttributeDetailsCtrl($scope, $location, $routeParams, Utils) {
         var index = attribute.labels.indexOf(label);
         if (index >= 0) {
             attribute.labels.splice(index, 1);
+        }
+    };
+
+    $scope.setConnectionPoint = function(isConnectionPoint) {
+        if (isConnectionPoint) {
+            Utils.setConnectionPoint($scope.selectedDataset, $scope.attribute);
+        } else {
+            $scope.attribute.connectionPoint = false;
         }
     };
 

@@ -164,6 +164,15 @@ ldmApp.factory('Utils', function() {
                     title: singleLabelTitle
                 });
             }
+        },
+
+        setConnectionPoint: function(dataset, attribute) {
+            attribute.connectionPoint = true;
+            $.each(dataset.attributes, function(i, attr) {
+                if (attr.id !== attribute.id) {
+                    attr.connectionPoint = false;
+                }
+            });
         }
     };
 });

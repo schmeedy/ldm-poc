@@ -15,7 +15,9 @@
 <span class="muted">in <strong data-toggle="tooltip" title="{{selectedDataset.id}}">{{selectedDataset.title}}</strong> dataset</span>
 
 <label class="checkbox">
-    <input type="checkbox"> Connection point
+    <input ng-checked="attribute.connectionPoint"
+           ng-click="setConnectionPoint(connectionPointChecked)"
+           ng-model="connectionPointChecked" type="checkbox"> Connection point
 </label>
 
 <h4><em>Labels</em></h4>
