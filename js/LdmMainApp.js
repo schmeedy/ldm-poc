@@ -201,9 +201,11 @@ function MainCtrl($scope, $location, $timeout, Utils, LdmMainResource, LdmPollRe
     $("#top-bar").append(spinner.el);
 
 
+    var externalProjectId = $location.search().projectId;
+    $scope.project = {id: externalProjectId || 'zgfs16g7iy7hkyeu0kkphblqfynjznw4'};
+
     $scope.datasets = [];
 
-    $scope.project = {id: 'zgfs16g7iy7hkyeu0kkphblqfynjznw4'};
 
     LdmMainResource.get({projectId: $scope.project.id}, function(data) {
         var taskId = data.uri.replace("/gdc/projects/" + $scope.project.id + "/webldm/view/", ""),
