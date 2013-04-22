@@ -21,23 +21,24 @@ ldmApp.factory('Utils', function() {
 
         // generate id for given type (dataset/attribute,...) and item title; id is unique across
         uuid: function(type, title, datasets) {
-            var sections = [type];
+            var sections = [type + "."],
+                isDate = (type === 'date-dimension');
+
+            if (isDate) {
+                sections = [];
+            }
 
             if (!title) {
                 throw "title can't be empty in order to generate id";
             }
 
-            if (title.match(/^[a-z][a-z0-9_\\.]*$/)) {
-                return this.makeUnique(sections.concat(title).join("."), datasets);
-            }
-
-            sections = sections.concat(title.split("."));
+            sections.push(title);
             for (var i = 0; i < sections.length; i++) {
                 sections[i] = sections[i].replace(/[^a-zA-Z0-9_]/g, "");
                 sections[i] = sections[i].replace(/^[0-9_]*/g, "");
             }
 
-            return this.makeUnique(sections.join("."), datasets);
+            return this.makeUnique(sections.join(isDate ? "" : ".").toLowerCase(), datasets);
 
         },
 
@@ -98,13 +99,15 @@ ldmApp.factory('Utils', function() {
             var datasetTitles = datasetTitle.split(/[;,]/);
             for (var i = 0; i < datasetTitles.length; i++) {
                 var singleDatasetTitle = datasetTitles[i];
+
+                datasetType = datasetType || 'dataset';
                 if (!singleDatasetTitle) {
                     continue;
                 }
                 allDatasets.push({
-                    id: this.uuid('dataset', singleDatasetTitle, allDatasets),
+                    id: this.uuid(datasetType, singleDatasetTitle, allDatasets),
                     title: singleDatasetTitle,
-                    type: datasetType || "dataset"
+                    type: datasetType
                 });
             }
         },
